@@ -9,7 +9,7 @@
 		<version>4.1.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>com.idega.xroad.client</artifactId>
-	<name>XRoad webservice client</name>
+	<name>XRoad Axis2 webservice client</name>
 
 	<developers>
 		<developer>
@@ -22,64 +22,10 @@
 	</developers>
 
 	<dependencies>
-		<!-- ePlatform core -->
-		<dependency>
-			<groupId>com.idega.block.platform</groupId>
-			<artifactId>com.idega.block.process.webservice</artifactId>
-		</dependency>
-
 		<!-- Addons -->
 		<dependency>
 			<groupId>com.idega.block.addon</groupId>
-			<artifactId>org.jboss.jbpm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.idega.block.addon</groupId>
 			<artifactId>com.idega.xroad</artifactId>
-		</dependency>
-
-		<!-- Other -->
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-			<version>${javax.ws.rs-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>${javax.servlet-servlet-api-version}</version>
-		</dependency>
-
-		<!-- Axis 2 -->
-		<dependency>
-			<groupId>org.apache.axis2</groupId>
-			<artifactId>axis2-kernel</artifactId>
-			<version>1.6.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.ws.rs</groupId>
-					<artifactId>jsr311-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2</groupId>
-			<artifactId>axis2-adb</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2</groupId>
-			<artifactId>axis2-transport-http</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2</groupId>
-			<artifactId>axis2-transport-local</artifactId>
-			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
 
@@ -91,6 +37,7 @@
 				<configuration>
 					<packageName>com.idega.xroad.client.wsdl</packageName>
 					<databindingName>adb</databindingName>
+					<generateServerSide>false</generateServerSide>
 				</configuration>
 				<executions>
 					<execution>
