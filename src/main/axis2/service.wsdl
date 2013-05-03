@@ -148,7 +148,6 @@
 			</complexType>
 			<complexType name="GetServiceListResponse">
 				<sequence>
-					<element name="request" />
 					<element name="response">
 						<complexType>
 							<sequence>
