@@ -82,12 +82,15 @@
  */
 package com.idega.xroad.client.business;
 
+import java.util.Locale;
+
 import org.jbpm.taskmgmt.def.Task;
 
 import com.idega.block.process.data.Case;
 import com.idega.user.data.User;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseProcessingStep_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
 
 
@@ -180,4 +183,18 @@ public interface XRoadServices {
 	 */
 	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
 			String caseIdentifier, String personalID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for data about labels of XForm</p>
+	 * @param serviceProviderID 
+	 * @param xFormID id of XForm, not <code>null</code>;
+	 * @param language - {@link Locale#getLanguage()}, 
+	 * not <code>null</code>;
+	 * @return map of selected XForm keys + labels by given language or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public LabelPair_type0[] getXFormsLabels(String serviceProviderID, 
+			String xFormID, String language);
 }

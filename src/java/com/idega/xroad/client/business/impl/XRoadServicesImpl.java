@@ -122,10 +122,18 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListRequest;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListResponse;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetXFormLabels;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetXFormLabelsE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetXFormLabelsRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetXFormLabelsResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetXFormLabelsResponseE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Id;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Issue;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LangType;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Producer;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type10;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type12;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type3;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type8;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Service;
@@ -152,6 +160,55 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	@Autowired
 	private XRoadDAO xroadDAO;
 
+	@Override
+	public LabelPair_type0[] getXFormsLabels(String serviceProviderID, String xFormID, String language) {
+		if (StringUtil.isEmpty(xFormID) || StringUtil.isEmpty(language) || StringUtil.isEmpty(serviceProviderID)) {
+			return null;
+		}
+		
+		GetXFormLabelsRequest request = new GetXFormLabelsRequest();
+		request.setXFormId(xFormID);
+		request.setServiceProviderId(serviceProviderID);
+		LangType langType = new LangType();
+		langType.setLangType(language);
+		request.setLang(langType);
+		
+		GetXFormLabels xFormsLabels = getInstantiatedObject(GetXFormLabels.class);
+		xFormsLabels.setRequest(request);
+		
+		GetXFormLabelsE xFormLabelsE = getInstantiatedObject(GetXFormLabelsE.class);
+		xFormLabelsE.setGetXFormLabels(xFormsLabels);
+		
+		GetXFormLabelsResponseE xFormLabelsResponseE = null;
+		try {
+			xFormLabelsResponseE = getEhubserviceServiceStub().getXFormLabels(
+					xFormLabelsE , getConsumer(), getProducer(), 
+					getUserId(getCurrentUser()), getServiceID(serviceProviderID), 
+					getService(XRoadClientConstants.SERVICE_GET_XFORMS_LABELS), 
+					getIssue("Test issue"));
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, "Unable to get: " +
+					GetXFormLabelsResponseE.class.getName() + " cause of: ", e);
+		}
+		
+		if (xFormLabelsResponseE == null) {
+			return null;
+		}
+		
+		GetXFormLabelsResponse xFromLabelsResponse = xFormLabelsResponseE
+				.getGetXFormLabelsResponse();
+		if (xFromLabelsResponse == null) {
+			return null;
+		}
+		
+		Response_type12 response = xFromLabelsResponse.getResponse();
+		if (response == null) {
+			return null;
+		}
+		
+		return response.getLabelPair();
+	}
+	
 	@Override
 	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
 			String caseIdentifier, String personalID) {
