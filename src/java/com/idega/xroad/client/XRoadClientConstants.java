@@ -1,5 +1,5 @@
 /**
- * @(#)XRoadServices.java    1.0.0 3:55:31 PM
+ * @(#)XRoadClientConstants.java    1.0.0 12:17:07 PM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,104 +80,32 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client.business;
+package com.idega.xroad.client;
 
-import org.jbpm.taskmgmt.def.Task;
-
-import com.idega.block.process.data.Case;
-import com.idega.user.data.User;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseProcessingStep_type0;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case_type0;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
-
-
+import com.idega.util.CoreConstants;
 
 /**
- * <p>Interface for communication with X-Road server</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
- * @version 1.0.0 Apr 17, 2013
+ * @version 1.0.0 May 7, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface XRoadServices {
-	
-	/**
-	 * 
-	 * <p>Queries X-Road for data about services.</p>
-	 * @param serviceProviderID
-	 * @param personalID - {@link User#getPersonalID()} of {@link User}
-	 * who has access to it, not <code>null</code>;
-	 * @return services by given criteria, or <code>null</code> on failure;
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
-	 */
-	public ServiceEntry_type0[] getServiceEntries(String serviceProviderID, String personalID);
-	
-	/**
-	 * 
-	 * <p>Queries X-Road for data about services</p>
-	 * @param serviceProviderID
-	 * @param user which can access service, not <code>null</code>;
-	 * @return  services by given criteria, or <code>null</code> on failure;
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
-	 */
-	public ServiceEntry_type0[] getServiceEntries(String serviceProviderID, User user);
+public interface XRoadClientConstants {
 
-	/**
-	 * 
-	 * <p>Queries X-Road for data about {@link Case}s</p>
-	 * @param serviceProviderID
-	 * @param personalID - {@link User#getPersonalID()} of {@link User} 
-	 * who can view {@link Case}s and is registered on required service,
-	 * not <code>null</code>;
-	 * @return data about {@link Case}s or <code>null</code> on failure;
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
-	 */
-	public Case_type0[] getCasesEntries(String serviceProviderID, String personalID);
+	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
 	
-	/**
-	 * 
-	 * <p>Queries X-Road for data about {@link Case}s</p>
-	 * @param serviceProviderID
-	 * @param user is {@link User} 
-	 * who can view {@link Case}s and is registered on required service,
-	 * not <code>null</code>;
-	 * @return data about {@link Case}s or <code>null</code> on failure;
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
-	 */
-	public Case_type0[] getCasesEntries(String serviceProviderID, User user);
-
-	/**
-	 * 
-	 * <p>Queries X-Road for data about concrete {@link Case} and its
-	 * {@link Task}s.</p>
-	 * @param serviceProviderID
-	 * @param caseIdentifier - {@link Case#getCaseIdentifier()}, not 
-	 * <code>null</code>;
-	 * @param user is {@link User} 
-	 * who can view {@link Case}s and is registered on required service,
-	 * not <code>null</code>;
-	 * @return data about {@link Case} and its {@link Task}s, 
-	 * defined by criteria, or <code>null</code> on failure;
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
-	 */
-	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
-			String caseIdentifier, User user);
+	public static final String SERVICE_PRODUCER = "ehubservice";
+	public static final String SERVICE_CONSUMER = "ehub"; 
 	
-	/**
-	 * 
-	 * <p>Queries X-Road for data about concrete {@link Case} and its
-	 * {@link Task}s.</p>
-	 * @param serviceProviderID
-	 * @param caseIdentifier - {@link Case#getCaseIdentifier()}, not 
-	 * <code>null</code>;
-	 * @param personalID - {@link User#getPersonalID()} of {@link User} 
-	 * who can view {@link Case}s and is registered on required service,
-	 * not <code>null</code>;
-	 * @return data about {@link Case} and its {@link Task}s, 
-	 * defined by criteria, or <code>null</code> on failure;
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
-	 */
-	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
-			String caseIdentifier, String personalID);
+	public static final String 
+		SERVICE_GET_XFORMS_LABELS = SERVICE_PRODUCER + CoreConstants.DOT + "GetXFormLabels",
+		SERVICE_GET_SERVICE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetServiceList",
+		SERVICE_GET_CASE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseList",
+		SERVICE_GET_CASE_DETAILS = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseDetails",
+		SERVICE_GET_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetDocument",
+		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
+		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
+		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
+		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications";
 }
