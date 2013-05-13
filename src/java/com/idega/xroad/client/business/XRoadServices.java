@@ -82,15 +82,20 @@
  */
 package com.idega.xroad.client.business;
 
+import java.io.InputStream;
 import java.util.Locale;
 
 import org.jbpm.taskmgmt.def.Task;
+import org.w3c.dom.Document;
 
+import com.idega.block.form.data.XForm;
 import com.idega.block.process.data.Case;
+import com.idega.block.process.message.data.Message;
 import com.idega.user.data.User;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseProcessingStep_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
 
 
@@ -197,4 +202,157 @@ public interface XRoadServices {
 	 */
 	public LabelPair_type0[] getXFormsLabels(String serviceProviderID, 
 			String xFormID, String language);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for data about {@link Message}s of given 
+	 * {@link User}.</p>
+	 * @param serviceProviderID
+	 * @param personalID of {@link User} to get messages of, not <code>null</code>;
+	 * @return data about {@link Message}s or {@link User} or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Message_type0[] getMessageEntries(String serviceProviderID,
+			String personalID);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for data about {@link Message}s of given 
+	 * {@link User}.</p>
+	 * @param serviceProviderID
+	 * @param user to get messages of, not <code>null</code>;
+	 * @return data about {@link Message}s or {@link User} or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Message_type0[] getMessageEntries(String serviceProviderID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getProcessedDocument(
+			String serviceProviderID, 
+			String documentID,
+			User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param userId is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getProcessedDocument(
+			String serviceProviderID, 
+			String documentID,
+			String userId);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getProcessedDocumentInXML(String serviceProviderID,
+			String documentID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param userId is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getProcessedDocumentInXML(String serviceProviderID,
+			String documentID, String userID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return stream of {@link Document} template or <code>null</code>
+	 * on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getXFormsDocumentTemplate(String serviceProviderID,
+			String documentID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param userID is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return stream of {@link Document} template or <code>null</code>
+	 * on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getXFormsDocumentTemplate(String serviceProviderID,
+			String documentID, String userID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return converted stream of {@link Document} template or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getXFormsDocumentTemplateInXML(String serviceProviderID,
+			String documentID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param userID is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return converted stream of {@link Document} template or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getXFormsDocumentTemplateInXML(String serviceProviderID,
+			String documentID, String userID);
 }

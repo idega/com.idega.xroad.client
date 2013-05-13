@@ -82,16 +82,22 @@
  */
 package com.idega.xroad.client.business.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 
+import javax.activation.DataHandler;
 import javax.ejb.FinderException;
 
 import org.apache.axis2.AxisFault;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.w3c.dom.Document;
 
+import com.idega.block.form.data.XForm;
+import com.idega.block.process.data.Case;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.core.business.DefaultSpringBean;
@@ -101,6 +107,7 @@ import com.idega.util.CoreConstants;
 import com.idega.util.CoreUtil;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
+import com.idega.util.xml.XmlUtil;
 import com.idega.xroad.client.XRoadClientConstants;
 import com.idega.xroad.client.business.XRoadServices;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub;
@@ -117,6 +124,16 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetCaseListE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetCaseListRequest;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetCaseListResponse;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetCaseListResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetDocument;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetDocumentE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetDocumentRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetDocumentResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetDocumentResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesList;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListResponseE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceList;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListRequest;
@@ -131,10 +148,13 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Id;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Issue;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LangType;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Producer;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type10;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type12;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type3;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type5;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type6;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type8;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Service;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
@@ -160,6 +180,270 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	@Autowired
 	private XRoadDAO xroadDAO;
 
+	@Override
+	public InputStream getProcessedDocument(String serviceProviderID, 
+			String documentID, String userId) {
+		return getProcessedDocument(serviceProviderID, documentID, getUser(userId));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getDocument(java.lang.String, java.lang.String, com.idega.user.data.User)
+	 */
+	@Override
+	public java.io.InputStream getProcessedDocument(
+			String serviceProviderID, String documentID, User user) {
+		Response_type6 response = getDocument(serviceProviderID, documentID, user);
+		if (response == null) {
+			getLogger().warning("Unable to get: " + Response_type6.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and document id: " + documentID);
+			return null;
+		}
+				
+		DataHandler documentHandler = response.getDocument();
+		try {
+			return documentHandler.getInputStream();
+		} catch (IOException e) {
+			getLogger().log(Level.WARNING, 
+					"Unable to open stream for document reading: ", e);
+		}
+		
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getProcessedDocumentInXML(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Document getProcessedDocumentInXML(
+			String serviceProviderID, String documentID, String userID) {
+		return getProcessedDocumentInXML(
+				serviceProviderID, documentID, getUser(userID));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getProcessedDocumentInXML(java.lang.String, java.lang.String, com.idega.user.data.User)
+	 */
+	@Override
+	public Document getProcessedDocumentInXML(
+			String serviceProviderID, String documentID, User user) {
+		InputStream inputStream = getProcessedDocument(
+				serviceProviderID, documentID, user);
+		if (inputStream == null) {
+			return null;
+		}
+		
+		return XmlUtil.getDocument(inputStream);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getXFormsDocumentTemplate(java.lang.String, java.lang.String, com.idega.user.data.User)
+	 */
+	@Override
+	public java.io.InputStream getXFormsDocumentTemplate(
+			String serviceProviderID, String documentID, User user) {
+		Response_type6 response = getDocument(serviceProviderID, documentID, user);
+		if (response == null) {
+			getLogger().warning("Unable to get: " + Response_type6.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and document id: " + documentID);
+			return null;
+		}
+				
+		DataHandler documentHandler = response.getXFormsTemplate();
+		try {
+			return documentHandler.getInputStream();
+		} catch (IOException e) {
+			getLogger().log(Level.WARNING, 
+					"Unable to open stream for document reading: ", e);
+		}
+		
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getXFormsDocumentTemplate(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public java.io.InputStream getXFormsDocumentTemplate(
+			String serviceProviderID, String documentID, String userID) {
+		return getXFormsDocumentTemplate(serviceProviderID, documentID, getUser(userID));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getXFormsDocumentTemplateInXML(java.lang.String, java.lang.String, com.idega.user.data.User)
+	 */
+	@Override
+	public Document getXFormsDocumentTemplateInXML(
+			String serviceProviderID, String documentID, User user) {
+		InputStream inputStream = getXFormsDocumentTemplate(
+				serviceProviderID, documentID, user);
+		if (inputStream == null) {
+			return null;
+		}
+		
+		return XmlUtil.getDocument(inputStream);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getXFormsDocumentTemplateInXML(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Document getXFormsDocumentTemplateInXML(
+			String serviceProviderID, String documentID, String userID) {
+		return getXFormsDocumentTemplateInXML(
+				serviceProviderID, documentID, getUser(userID));
+	}
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return response from service or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	protected Response_type6 getDocument(
+			String serviceProviderID, String documentID, User user) {
+		if (StringUtil.isEmpty(serviceProviderID) || StringUtil.isEmpty(documentID)) {
+			return null;
+		}
+		
+		GetDocumentRequest request = getInstantiatedObject(GetDocumentRequest.class);
+		request.setDocumentId(documentID);
+		request.setServiceProviderId(serviceProviderID);
+		
+		GetDocument document =  getInstantiatedObject(GetDocument.class);
+		document.setRequest(request);
+		
+		GetDocumentE documentE = getInstantiatedObject(GetDocumentE.class);
+		documentE.setGetDocument(document);
+		
+		GetDocumentResponseE documentResponseE = null;
+		try {
+			documentResponseE = getEhubserviceServiceStub().getDocument(
+					documentE,
+					getConsumer(), 
+					getProducer(),
+					getUserId(user),
+					getServiceID(serviceProviderID),
+					getService(XRoadClientConstants.SERVICE_GET_DOCUMENT), 
+					getIssue("Issue"));
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, 
+					"Unable to get: " + GetDocumentResponseE.class + " cause of: ", e);
+		}
+		
+		if (documentResponseE == null) {
+			getLogger().warning("Unable to get: " + GetDocumentResponseE.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and document id: " + documentID);
+			return null;
+		}
+		
+		GetDocumentResponse documentResponse = documentResponseE
+				.getGetDocumentResponse();
+		if (documentResponse == null) {
+			getLogger().warning("Unable to get: " + GetDocumentResponse.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and document id: " + documentID);
+			return null;
+		}
+		
+		return documentResponse.getResponse();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getMessageEntries(java.lang.Object, java.lang.String)
+	 */
+	@Override
+	public Message_type0[] getMessageEntries(String serviceProviderID,
+			String personalID) {
+		return getMessageEntries(serviceProviderID, getUser(personalID));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getMessageEntries(java.lang.String, com.idega.user.data.User)
+	 */
+	@Override
+	public Message_type0[] getMessageEntries(String serviceProviderID, User user) {
+		if (StringUtil.isEmpty(serviceProviderID)) {
+			serviceProviderID = "noServiceProvider";
+		}
+		
+		if (user == null) {
+			return null;
+		}
+		
+		GetMessagesListRequest request = getInstantiatedObject(GetMessagesListRequest.class);
+		request.setCitizenId(user.getPersonalID());
+		request.setServiceProviderId(serviceProviderID);
+		
+		GetMessagesList messageList = getInstantiatedObject(GetMessagesList.class);
+		messageList.setRequest(request);
+		
+		GetMessagesListE messagesListE = getInstantiatedObject(GetMessagesListE.class);
+		messagesListE.setGetMessagesList(messageList);
+		
+		GetMessagesListResponseE messageListResponseE = null;
+		try {
+			messageListResponseE = getEhubserviceServiceStub().getMessagesList(
+					messagesListE , 
+					getConsumer(), 
+					getProducer(), 
+					getUserId(user), 
+					getServiceID(serviceProviderID), 
+					getService(XRoadClientConstants.SERVICE_GET_MESSAGES_LIST), 
+					getIssue("Some issue"));
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, 
+					"Unable to get " + GetMessagesListResponseE.class.getName(), e);
+		}
+		
+		if  (messageListResponseE == null) {
+			getLogger().warning("Unable to get: " + GetMessagesListResponseE.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and user: " + user);
+			return null;
+		}
+		
+		GetMessagesListResponse messageListResponse = messageListResponseE
+				.getGetMessagesListResponse();
+		if (messageListResponse == null) {
+			getLogger().warning("Unable to get: " + GetMessagesListResponse.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and user: " + user);
+			return null;
+		}
+		
+		Response_type5 response = messageListResponse.getResponse();
+		if (response == null) {
+			getLogger().warning("Unable to get: " + Response_type5.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and user: " + user);
+			return null;
+		}
+		
+		return response.getMessage();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getXFormsLabels(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public LabelPair_type0[] getXFormsLabels(String serviceProviderID, String xFormID, String language) {
 		if (StringUtil.isEmpty(xFormID) || StringUtil.isEmpty(language) || StringUtil.isEmpty(serviceProviderID)) {
@@ -192,29 +476,46 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		}
 		
 		if (xFormLabelsResponseE == null) {
+			getLogger().warning("Unable to get: " + GetXFormLabelsResponseE.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and XForm ID: " + xFormID);
 			return null;
 		}
 		
 		GetXFormLabelsResponse xFromLabelsResponse = xFormLabelsResponseE
 				.getGetXFormLabelsResponse();
 		if (xFromLabelsResponse == null) {
+			getLogger().warning("Unable to get: " + GetXFormLabelsResponse.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and XForm ID: " + xFormID);
 			return null;
 		}
 		
 		Response_type12 response = xFromLabelsResponse.getResponse();
 		if (response == null) {
+			getLogger().warning("Unable to get: " + Response_type12.class + 
+					" by service provider ID: " + serviceProviderID + 
+					" and XForm ID: " + xFormID);
 			return null;
 		}
 		
 		return response.getLabelPair();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getCaseEntries(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
 			String caseIdentifier, String personalID) {
 		return getCaseEntries(serviceProviderID, caseIdentifier, getUser(personalID));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getCaseEntries(java.lang.String, java.lang.String, com.idega.user.data.User)
+	 */
 	@Override
 	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID, 
 			String caseIdentifier, User user) {
@@ -224,25 +525,13 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		}
 		
 		GetCaseDetailsRequest request = getInstantiatedObject(GetCaseDetailsRequest.class);
-		if (request == null) {
-			return null;
-		}
-		
 		request.setServiceProviderId(serviceProviderID);
 		request.setCaseId(caseIdentifier);
 		
 		GetCaseDetails caseDetails = getInstantiatedObject(GetCaseDetails.class);
-		if (caseDetails == null) {
-			return null;
-		}
-		
 		caseDetails.setRequest(request);
 		
 		GetCaseDetailsE caseDetailsE = getInstantiatedObject(GetCaseDetailsE.class);
-		if (caseDetailsE == null) {
-			return null;
-		}
-		
 		caseDetailsE.setGetCaseDetails(caseDetails);
 		
 		GetCaseDetailsResponseE caseDetailsResponseE = null;
@@ -263,59 +552,61 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		
 		if (caseDetailsResponseE == null) {
 			getLogger().warning("Unable to get: " + GetCaseDetailsResponseE.class + 
-					" by service provider ID: " + serviceProviderID);
+					" by service provider ID: " + serviceProviderID + 
+					" and " + Case.class +  " identifier: " + caseIdentifier + 
+					" and user: " + user);
 			return null;
 		}
 		
 		GetCaseDetailsResponse caseDetailsResponse = caseDetailsResponseE.getGetCaseDetailsResponse();
 		if (caseDetailsResponse == null) {
 			getLogger().warning("Unable to get: " + GetCaseDetailsResponse.class + 
-					" by service provider ID: " + serviceProviderID);
+					" by service provider ID: " + serviceProviderID + 
+					" and " + Case.class +  " identifier: " + caseIdentifier + 
+					" and user: " + user);
 			return null;
 		}
 		
 		Response_type8 reponse = caseDetailsResponse.getResponse();
 		if (reponse == null) {
 			getLogger().warning("Unable to get: " + Response_type8.class + 
-					" by service provider ID: " + serviceProviderID);
+					" by service provider ID: " + serviceProviderID + 
+					" and " + Case.class +  " identifier: " + caseIdentifier + 
+					" and user: " + user);
 			return null;
 		}
 		
 		return reponse.getCaseProcessingStep();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getCasesEntries(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Case_type0[] getCasesEntries(String serviceProviderID,
 			String personalID) {
 		return getCasesEntries(serviceProviderID, getUser(personalID));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getCasesEntries(java.lang.String, com.idega.user.data.User)
+	 */
 	@Override
 	public Case_type0[] getCasesEntries(String serviceProviderID, User user) {
-//		if (user == null || StringUtil.isEmpty(serviceProviderID)) {
-//			return null;
-//		}
-		
-		GetCaseListRequest request = getInstantiatedObject(GetCaseListRequest.class);
-		if (request == null) {
+		if (user == null || StringUtil.isEmpty(serviceProviderID)) {
 			return null;
 		}
 		
+		GetCaseListRequest request = getInstantiatedObject(GetCaseListRequest.class);
 		request.setCitizenId(user.getPersonalID());
 		request.setServiceProviderId(serviceProviderID);
 		
 		GetCaseList caseList = getInstantiatedObject(GetCaseList.class);
-		if (caseList == null) {
-			return null;
-		}
-		
 		caseList.setRequest(request);
 		
 		GetCaseListE caseListE =  getInstantiatedObject(GetCaseListE.class);
-		if (caseListE == null) {
-			return null;
-		}
-		
 		caseListE.setGetCaseList(caseList);
 		
 		GetCaseListResponseE caseListResponseE = null;
@@ -334,33 +625,44 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		
 		if (caseListResponseE == null) {
 			getLogger().warning("Unable to get: " + GetCaseListResponseE.class + 
-					" by service provider ID: " + serviceProviderID);
+					" by service provider ID: " + serviceProviderID + 
+					" and user: " + user);
 			return null;
 		}
 		
 		GetCaseListResponse caseListResponse = caseListResponseE.getGetCaseListResponse();
 		if (caseListResponse == null) {
 			getLogger().warning("Unable to get: " + GetCaseListResponse.class + 
-					" by service provider ID: " + serviceProviderID);
+					" by service provider ID: " + serviceProviderID + 
+					" and user: " + user);
 			return null;
 		}
 		
 		Response_type3 reponse = caseListResponse.getResponse();
 		if (reponse == null) {
 			getLogger().warning("Unable to get: " + Response_type3.class + 
-					" by service provider ID: " + serviceProviderID);
+					" by service provider ID: " + serviceProviderID + 
+					" and user: " + user);
 			return null;
 		}
 		
 		return reponse.get_case();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getServiceEntries(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public ServiceEntry_type0[] getServiceEntries(String serviceProviderID,
 			String personalID) {
 		return getServiceEntries(serviceProviderID, getUser(personalID));
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getServiceEntries(java.lang.String, com.idega.user.data.User)
+	 */
 	@Override
 	public ServiceEntry_type0[] getServiceEntries(
 			String serviceProviderID, User user) {
@@ -369,29 +671,17 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		}
 
 		GetServiceListRequest type = getInstantiatedObject(GetServiceListRequest.class);
-		if (type == null) {
-			return null;
-		}
-
 		type.setServiceProviderId(serviceProviderID);
 
 		GetServiceList serviceList = getInstantiatedObject(GetServiceList.class);
-		if (serviceList == null) {
-			return null;
-		}
-
 		serviceList.setRequest(type);
 
 		GetServiceListE serviceListE = getInstantiatedObject(GetServiceListE.class);
-		if (serviceListE == null) {
-			return null;
-		}
-
 		serviceListE.setGetServiceList(serviceList);
 
 		GetServiceListResponseE serviceListResponseE = null;
 		try {
-			serviceListResponseE = getEhubserviceServiceStub()	.getServiceList(
+			serviceListResponseE = getEhubserviceServiceStub().getServiceList(
 					serviceListE, 
 					getConsumer(), 
 					getProducer(), 
@@ -407,7 +697,8 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 
 		if (serviceListResponseE == null) {
 			getLogger().warning("Unable to get " + GetServiceListResponseE.class + 
-					" from provider by id: " + serviceProviderID);
+					" from provider by id: " + serviceProviderID + 
+					" and user: " + user);
 			return null;
 		}
 
@@ -415,14 +706,16 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 				.getGetServiceListResponse();
 		if (serviceListResponse == null) {
 			getLogger().warning("Unable to get " + GetServiceListResponse.class + 
-					" from provider by id: " + serviceProviderID);
+					" from provider by id: " + serviceProviderID + 
+					" and user: " + user);
 			return null;
 		}
 
 		Response_type10 response = serviceListResponse.getResponse();
 		if (response == null) {
 			getLogger().warning("Unable to get " + Response_type10.class + 
-					" from provider by id: " + serviceProviderID);
+					" from provider by id: " + serviceProviderID + 
+					" and user: " + user);
 			return null;
 		}
 
@@ -555,6 +848,15 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		} catch (FinderException e) {
 			getLogger().log(Level.WARNING, "Unable to find " + User.class + 
 					" by personal id: " + personalId);
+		}
+		
+		try {
+			return getUserBusiness().getUser(Integer.valueOf(personalId));
+		} catch (NumberFormatException e) {
+			getLogger().log(Level.WARNING,
+					"Unable to convert id: " + personalId + " to numeric.");
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, "Unable to connect data source: ", e);
 		}
 		
 		return null;

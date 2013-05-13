@@ -27,6 +27,10 @@
 			<groupId>com.idega.block.addon</groupId>
 			<artifactId>com.idega.xroad</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.idega.block.addon</groupId>
+			<artifactId>com.idega.block.form</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
