@@ -48,8 +48,8 @@
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
         <sequence>
-          <element name="serviceProviderId" type="string"></element>
-          <element name="xFormId" type="string"></element>
+          <element name="serviceProviderId" type="string"/>
+          <element name="xFormId" type="string"/>
           <element name="lang" type="tns:langType">
             <annotation>
               <appinfo>Language in ISO format</appinfo>
@@ -63,8 +63,7 @@
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetXFormLabelsRequest">
-          </element>
+          <element name="request" type="tns:GetXFormLabelsRequest"/>
         </sequence>
       </complexType>
 
@@ -150,7 +149,7 @@
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
         <sequence>
-          <element name="serviceProviderId" type="string"></element>
+          <element name="serviceProviderId" type="string"/>
           <element name="citizenId" type="string">
             <annotation>
               <appinfo>Country specific identification number (i.e. personal
@@ -263,8 +262,8 @@
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
         <sequence>
-          <element name="serviceProviderId" type="string"></element>
-          <element name="caseId" type="string"></element>
+          <element name="serviceProviderId" type="string"/>
+          <element name="caseId" type="string"/>
         </sequence>
       </complexType>
 
@@ -273,7 +272,7 @@
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetCaseDetailsRequest"></element>
+          <element name="request" type="tns:GetCaseDetailsRequest"/>
         </sequence>
       </complexType>
 
@@ -327,8 +326,8 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="stepName" type="string"></element>
-                      <element name="stepUrl" type="string"></element>
+                      <element name="stepName" type="string"/>
+                      <element name="stepUrl" type="string"/>
                     </sequence>
                   </complexType>
                 </element>
@@ -343,8 +342,8 @@
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
         <sequence>
-          <element name="serviceProviderId" type="string"></element>
-          <element name="documentId" type="string"></element>
+          <element name="serviceProviderId" type="string"/>
+          <element name="documentId" type="string"/>
         </sequence>
       </complexType>
 
@@ -353,8 +352,7 @@
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetDocumentRequest">
-          </element>
+          <element name="request" type="tns:GetDocumentRequest"/>
         </sequence>
       </complexType>
 
@@ -390,7 +388,7 @@
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
         <sequence>
-          <element name="serviceProviderId" type="string"></element>
+          <element name="serviceProviderId" type="string"/>
           <element name="citizenId" type="string">
             <annotation>
               <appinfo>Country specific identification number (i.e. personal
@@ -462,9 +460,15 @@
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
         <sequence>
-          <element name="citizenId" type="string"></element>
-          <element name="serviceId" type="string"></element>
-          <element name="languageId" type="tns:langType"></element>
+          <element name="citizenId" type="string"/>
+          <element name="serviceId" type="string"/>
+          <element name="languageId" type="tns:langType"/>
+          <element name="stepId" type="string">
+            <annotation>
+              <appinfo>identifies task of document that should be filled
+              </appinfo>
+            </annotation>
+          </element>
         </sequence>
       </complexType>
 
@@ -473,7 +477,7 @@
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetPrefilledDocumentRequest"></element>
+          <element name="request" type="tns:GetPrefilledDocumentRequest"/>
         </sequence>
       </complexType>
 
@@ -513,9 +517,9 @@
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
         <sequence>
-          <element name="citizenId" type="string"></element>
-          <element name="serviceId" type="string"></element>
-          <element name="languageId" type="string"></element>
+          <element name="citizenId" type="string"/>
+          <element name="serviceId" type="string"/>
+          <element name="languageId" type="string"/>
           <element name="document" type="base64Binary">
             <annotation>
               <appinfo>XML document encoded as a blob</appinfo>
@@ -534,7 +538,7 @@
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:SubmitDocumentRequest"></element>
+          <element name="request" type="tns:SubmitDocumentRequest"/>
         </sequence>
 
       </complexType>
@@ -576,16 +580,18 @@
         <annotation>
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
-        <!-- XXX Why it gives validation error and does it disturb? -->
-        <sequence></sequence>
+        <simpleContent>
+          <extension base="string">
+            <attribute name="dummy" type="string" />
+          </extension>
+        </simpleContent>
       </complexType>
 
       <complexType name="GetNotifications">
         <annotation>
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
-        <element name="request" type="tns:GetNotificationsRequest">
-        </element>
+        <element name="request" type="tns:GetNotificationsRequest"/>
       </complexType>
 
       <complexType name="GetNotificationsResponse">
@@ -600,9 +606,9 @@
                 <element name="notification" maxOccurs="unbounded" minOccurs="0">
                   <complexType>
                     <sequence>
-                      <element name="citizenId" type="string"></element>
-                      <element name="textLabel" type="tns:labelType"></element>
-                      <element name="caseId" type="string"></element>
+                      <element name="citizenId" type="string"/>
+                      <element name="textLabel" type="tns:labelType"/>
+                      <element name="caseId" type="string"/>
                       <element name="orgLabel" type="tns:labelType">
                         <annotation>
                           <appinfo>Label of the organization sending the
@@ -621,6 +627,9 @@
 
       <!-- Meta-services - start -->
       <element name="allowedMethods">
+        <annotation>
+          <appinfo>Corresponds to request message</appinfo>
+        </annotation>
         <!-- Just random attribute to avoid nested elements -->
         <complexType>
           <attribute name="dummy" type="string" />
@@ -628,6 +637,9 @@
       </element>
 
       <element name="allowedMethodsResponse">
+        <annotation>
+          <appinfo>Corresponds to response message</appinfo>
+        </annotation>
         <complexType>
           <sequence>
             <element name="response">
@@ -648,8 +660,8 @@
 
       <complexType name="labelType">
         <sequence>
-          <element name="lang" type="tns:langType"></element>
-          <element name="text" type="string"></element>
+          <element name="lang" type="tns:langType"/>
+          <element name="text" type="string"/>
         </sequence>
       </complexType>
 
@@ -657,7 +669,7 @@
         <restriction base="string">
           <!-- Allow exactly two letters! XXX Eclipse gives validation error, but in practice it seems 
             to be working -->
-          <pattern value="\b[a-zA-Z]{2}\b"></pattern>
+          <pattern value="\b[a-zA-Z]{2}\b"/>
         </restriction>
       </simpleType>
 

@@ -134,6 +134,11 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListRequest;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListResponse;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocument;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocumentE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocumentRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocumentResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocumentResponseE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceList;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetServiceListRequest;
@@ -156,6 +161,7 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type3;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type5;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type6;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type8;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type9;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Service;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.UserId;
@@ -180,6 +186,132 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	@Autowired
 	private XRoadDAO xroadDAO;
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getPreffiledDocument(java.lang.String, java.lang.String, com.idega.user.data.User, java.lang.String)
+	 */
+	@Override
+	public InputStream getPreffiledDocument(String applicationID,
+			String taskID, User user, String language) {
+		if (user == null || StringUtil.isEmpty(applicationID)) {
+			return null;
+		}
+		
+		if (taskID == null) {
+			taskID = CoreConstants.EMPTY;
+		}
+		
+		GetPrefilledDocumentRequest request = getInstantiatedObject(GetPrefilledDocumentRequest.class);
+		request.setCitizenId(user.getPersonalID());
+		request.setServiceId(applicationID);
+		request.setStepId(taskID);
+		
+		LangType langType = getInstantiatedObject(LangType.class);
+		langType.setLangType(language);
+		
+		request.setLanguageId(langType);
+		
+		GetPrefilledDocument prefilledDocument = getInstantiatedObject(GetPrefilledDocument.class);
+		prefilledDocument.setRequest(request);
+		
+		GetPrefilledDocumentE prefilledDocumentE = getInstantiatedObject(GetPrefilledDocumentE.class);
+		prefilledDocumentE.setGetPrefilledDocument(prefilledDocument);
+		
+		GetPrefilledDocumentResponseE preffiledDocumentResponseE = null;
+		try {
+			 preffiledDocumentResponseE = getEhubserviceServiceStub().getPrefilledDocument(
+					prefilledDocumentE , 
+					getConsumer(), 
+					getProducer(), 
+					getUserId(user), 
+					getServiceID(applicationID), 
+					getService(XRoadClientConstants.SERVICE_GET_PREFILLED_DOCUMENT), 
+					getIssue("Some issue"));
+		} catch (RemoteException e) {
+			getLogger()	.log(Level.WARNING, 
+					"Unable to get " + GetPrefilledDocumentResponseE.class + 
+					" cause of: ", e);
+		}
+		
+		if (preffiledDocumentResponseE == null) {
+			getLogger().warning("Unable to get: " + GetPrefilledDocumentResponseE.class + 
+					" by service provider ID: " + applicationID + 
+					" and user personal id: " + user.getPersonalID() + 
+					" and language: " + language);
+			return null;
+		}
+		
+		GetPrefilledDocumentResponse preffiledDocumentResponse = preffiledDocumentResponseE
+				.getGetPrefilledDocumentResponse();
+		if (preffiledDocumentResponse == null) {
+			getLogger().warning("Unable to get: " + GetPrefilledDocumentResponse.class + 
+					" by service provider ID: " + applicationID + 
+					" and user personal id: " + user.getPersonalID() + 
+					" and language: " + language);
+		}
+		
+		Response_type9 response = preffiledDocumentResponse.getResponse();
+		if (response == null) {
+			getLogger().warning("Unable to get: " + Response_type9.class + 
+					" by service provider ID: " + applicationID + 
+					" and user personal id: " + user.getPersonalID() + 
+					" and language: " + language);
+		}
+		
+		DataHandler documentHandler = response.getDocument();
+		if (documentHandler == null) {
+			getLogger().warning("Unable to get: " + Response_type9.class + 
+					" by service provider ID: " + applicationID + 
+					" and user personal id: " + user.getPersonalID() + 
+					" and language: " + language);
+		}
+		
+		try {
+			return documentHandler.getInputStream();
+		} catch (IOException e) {
+			getLogger().log(Level.WARNING, 
+					"Failed to get " + InputStream.class, e);
+		}
+		
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getPreffiledDocumentInXML(java.lang.String, java.lang.String, com.idega.user.data.User, java.lang.String)
+	 */
+	@Override
+	public Document getPreffiledDocumentInXML(String applicationID,
+			String taskID, User user, String language) {
+		return XmlUtil.getDocument(
+				getPreffiledDocument(applicationID, taskID, user, language));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getPreffiledDocumentInXML(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Document getPreffiledDocumentInXML(String serviceProviderID, String taskID,
+			String userId, String language) {
+		return XmlUtil.getDocument(
+				getPreffiledDocument(serviceProviderID, taskID, userId, language));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getPreffiledDocument(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public InputStream getPreffiledDocument(String applicationID, String taskID,
+			String userId, String language) {
+		return getPreffiledDocument(applicationID, taskID, getUser(userId), language);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getProcessedDocument(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public InputStream getProcessedDocument(String serviceProviderID, 
 			String documentID, String userId) {

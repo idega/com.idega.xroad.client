@@ -85,7 +85,9 @@ package com.idega.xroad.client.business;
 import java.io.InputStream;
 import java.util.Locale;
 
+import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.taskmgmt.def.Task;
+import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.w3c.dom.Document;
 
 import com.idega.block.form.data.XForm;
@@ -97,8 +99,6 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
-
-
 
 /**
  * <p>Interface for communication with X-Road server</p>
@@ -231,9 +231,9 @@ public interface XRoadServices {
 	/**
 	 * 
 	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
-	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
 	 * @param serviceProviderID
-	 * @param documentID - {@link XForm#getFormId()}, 
+	 * @param documentID - {@link TaskInstance#getId()}, 
 	 * not <code>null</code>;
 	 * @param user who can access {@link Document}, not null;
 	 * @return processed {@link Document} of {@link XForm} or 
@@ -266,9 +266,9 @@ public interface XRoadServices {
 	/**
 	 * 
 	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
-	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
 	 * @param serviceProviderID
-	 * @param documentID - {@link XForm#getFormId()}, 
+	 * @param documentID - {@link TaskInstance#getId()}, 
 	 * not <code>null</code>;
 	 * @param user who can access {@link Document}, not null;
 	 * @return processed {@link Document} of {@link XForm} or 
@@ -281,9 +281,9 @@ public interface XRoadServices {
 	/**
 	 * 
 	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
-	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
 	 * @param serviceProviderID
-	 * @param documentID - {@link XForm#getFormId()}, 
+	 * @param documentID - {@link TaskInstance#getId()}, 
 	 * not <code>null</code>;
 	 * @param userId is {@link User#getPersonalID()} of {@link User} 
 	 * who can access {@link Document}, not <code>null</code>;
@@ -297,9 +297,9 @@ public interface XRoadServices {
 	/**
 	 * 
 	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
-	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
 	 * @param serviceProviderID
-	 * @param documentID - {@link XForm#getFormId()}, 
+	 * @param documentID - {@link TaskInstance#getId()}, 
 	 * not <code>null</code>;
 	 * @param user who can access {@link Document}, not null;
 	 * @return stream of {@link Document} template or <code>null</code>
@@ -312,9 +312,9 @@ public interface XRoadServices {
 	/**
 	 * 
 	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
-	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
 	 * @param serviceProviderID
-	 * @param documentID - {@link XForm#getFormId()}, 
+	 * @param documentID - {@link TaskInstance#getId()}, 
 	 * not <code>null</code>;
 	 * @param userID is {@link User#getPersonalID()} of {@link User} 
 	 * who can access {@link Document}, not <code>null</code>;
@@ -328,9 +328,9 @@ public interface XRoadServices {
 	/**
 	 * 
 	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
-	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
 	 * @param serviceProviderID
-	 * @param documentID - {@link XForm#getFormId()}, 
+	 * @param documentID - {@link TaskInstance#getId()}, 
 	 * not <code>null</code>;
 	 * @param user who can access {@link Document}, not null;
 	 * @return converted stream of {@link Document} template or 
@@ -343,9 +343,9 @@ public interface XRoadServices {
 	/**
 	 * 
 	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
-	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
 	 * @param serviceProviderID
-	 * @param documentID - {@link XForm#getFormId()}, 
+	 * @param documentID - {@link TaskInstance#getId()}, 
 	 * not <code>null</code>;
 	 * @param userID is {@link User#getPersonalID()} of {@link User} 
 	 * who can access {@link Document}, not <code>null</code>;
@@ -355,4 +355,104 @@ public interface XRoadServices {
 	 */
 	public Document getXFormsDocumentTemplateInXML(String serviceProviderID,
 			String documentID, String userID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param userId is {@link User#getPersonalID()} of user, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return stream of {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getPreffiledDocument(
+			String applicationID, 
+			String taskID,
+			String userId,	
+			String language);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param user is {@link User}, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return stream of {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getPreffiledDocument(
+			String applicationID, 
+			String taskID,
+			User user,	
+			String language);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param userId is {@link User#getPersonalID()} of user, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getPreffiledDocumentInXML(
+			String applicationID, 
+			String taskID,
+			String userId,
+			String language);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param user is {@link User}, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getPreffiledDocumentInXML(
+			String applicationID, 
+			String taskID,
+			User user,
+			String language);
 }
