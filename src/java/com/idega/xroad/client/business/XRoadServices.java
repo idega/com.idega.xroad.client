@@ -82,14 +82,23 @@
  */
 package com.idega.xroad.client.business;
 
-import java.rmi.RemoteException;
+import java.io.InputStream;
+import java.util.Locale;
 
-import org.apache.axis2.AxisFault;
+import org.jbpm.graph.exe.ProcessInstance;
+import org.jbpm.taskmgmt.def.Task;
+import org.jbpm.taskmgmt.exe.TaskInstance;
+import org.w3c.dom.Document;
 
+import com.idega.block.form.data.XForm;
+import com.idega.block.process.data.Case;
+import com.idega.block.process.message.data.Message;
 import com.idega.user.data.User;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseProcessingStep_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
-
-
 
 /**
  * <p>Interface for communication with X-Road server</p>
@@ -103,14 +112,347 @@ public interface XRoadServices {
 	
 	/**
 	 * 
-	 * <p>Get service entries from X-Road</p>
+	 * <p>Queries X-Road for data about services.</p>
 	 * @param serviceProviderID
-	 * @param user
-	 * @return
-	 * @throws AxisFault
-	 * @throws RemoteException
+	 * @param personalID - {@link User#getPersonalID()} of {@link User}
+	 * who has access to it, not <code>null</code>;
+	 * @return services by given criteria, or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public ServiceEntry_type0[] getServiceEntries(
-			String serviceProviderID, User user) throws AxisFault, RemoteException;
+	public ServiceEntry_type0[] getServiceEntries(String serviceProviderID, String personalID);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for data about services</p>
+	 * @param serviceProviderID
+	 * @param user which can access service, not <code>null</code>;
+	 * @return  services by given criteria, or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ServiceEntry_type0[] getServiceEntries(String serviceProviderID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for data about {@link Case}s</p>
+	 * @param serviceProviderID
+	 * @param personalID - {@link User#getPersonalID()} of {@link User} 
+	 * who can view {@link Case}s and is registered on required service,
+	 * not <code>null</code>;
+	 * @return data about {@link Case}s or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Case_type0[] getCasesEntries(String serviceProviderID, String personalID);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for data about {@link Case}s</p>
+	 * @param serviceProviderID
+	 * @param user is {@link User} 
+	 * who can view {@link Case}s and is registered on required service,
+	 * not <code>null</code>;
+	 * @return data about {@link Case}s or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Case_type0[] getCasesEntries(String serviceProviderID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for data about concrete {@link Case} and its
+	 * {@link Task}s.</p>
+	 * @param serviceProviderID
+	 * @param caseIdentifier - {@link Case#getCaseIdentifier()}, not 
+	 * <code>null</code>;
+	 * @param user is {@link User} 
+	 * who can view {@link Case}s and is registered on required service,
+	 * not <code>null</code>;
+	 * @return data about {@link Case} and its {@link Task}s, 
+	 * defined by criteria, or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
+			String caseIdentifier, User user);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for data about concrete {@link Case} and its
+	 * {@link Task}s.</p>
+	 * @param serviceProviderID
+	 * @param caseIdentifier - {@link Case#getCaseIdentifier()}, not 
+	 * <code>null</code>;
+	 * @param personalID - {@link User#getPersonalID()} of {@link User} 
+	 * who can view {@link Case}s and is registered on required service,
+	 * not <code>null</code>;
+	 * @return data about {@link Case} and its {@link Task}s, 
+	 * defined by criteria, or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
+			String caseIdentifier, String personalID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for data about labels of XForm</p>
+	 * @param serviceProviderID 
+	 * @param xFormID id of XForm, not <code>null</code>;
+	 * @param language - {@link Locale#getLanguage()}, 
+	 * not <code>null</code>;
+	 * @return map of selected XForm keys + labels by given language or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public LabelPair_type0[] getXFormsLabels(String serviceProviderID, 
+			String xFormID, String language);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for data about {@link Message}s of given 
+	 * {@link User}.</p>
+	 * @param serviceProviderID
+	 * @param personalID of {@link User} to get messages of, not <code>null</code>;
+	 * @return data about {@link Message}s or {@link User} or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Message_type0[] getMessageEntries(String serviceProviderID,
+			String personalID);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for data about {@link Message}s of given 
+	 * {@link User}.</p>
+	 * @param serviceProviderID
+	 * @param user to get messages of, not <code>null</code>;
+	 * @return data about {@link Message}s or {@link User} or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Message_type0[] getMessageEntries(String serviceProviderID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link TaskInstance#getId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getProcessedDocument(
+			String serviceProviderID, 
+			String documentID,
+			User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link XForm#getFormId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link XForm#getFormId()}, 
+	 * not <code>null</code>;
+	 * @param userId is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getProcessedDocument(
+			String serviceProviderID, 
+			String documentID,
+			String userId);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link TaskInstance#getId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getProcessedDocumentInXML(String serviceProviderID,
+			String documentID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for processed {@link Document} of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link TaskInstance#getId()}, 
+	 * not <code>null</code>;
+	 * @param userId is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return processed {@link Document} of {@link XForm} or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getProcessedDocumentInXML(String serviceProviderID,
+			String documentID, String userID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link TaskInstance#getId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return stream of {@link Document} template or <code>null</code>
+	 * on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getXFormsDocumentTemplate(String serviceProviderID,
+			String documentID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link TaskInstance#getId()}, 
+	 * not <code>null</code>;
+	 * @param userID is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return stream of {@link Document} template or <code>null</code>
+	 * on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getXFormsDocumentTemplate(String serviceProviderID,
+			String documentID, String userID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link TaskInstance#getId()}, 
+	 * not <code>null</code>;
+	 * @param user who can access {@link Document}, not null;
+	 * @return converted stream of {@link Document} template or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getXFormsDocumentTemplateInXML(String serviceProviderID,
+			String documentID, User user);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}.</p>
+	 * @param serviceProviderID
+	 * @param documentID - {@link TaskInstance#getId()}, 
+	 * not <code>null</code>;
+	 * @param userID is {@link User#getPersonalID()} of {@link User} 
+	 * who can access {@link Document}, not <code>null</code>;
+	 * @return converted stream of {@link Document} template or 
+	 * <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getXFormsDocumentTemplateInXML(String serviceProviderID,
+			String documentID, String userID);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param userId is {@link User#getPersonalID()} of user, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return stream of {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getPreffiledDocument(
+			String applicationID, 
+			String taskID,
+			String userId,	
+			String language);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param user is {@link User}, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return stream of {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public InputStream getPreffiledDocument(
+			String applicationID, 
+			String taskID,
+			User user,	
+			String language);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param userId is {@link User#getPersonalID()} of user, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getPreffiledDocumentInXML(
+			String applicationID, 
+			String taskID,
+			String userId,
+			String language);
+	
+	/**
+	 * 
+	 * <p>Queries X-Road for {@link Document} template of {@link XForm}
+	 * by given {@link User} and {@link TaskInstance#getId()}. 
+	 * {@link Document} will be filled by initial data by given 
+	 * {@link User#getPersonalID()}.</p>
+	 * @param applicationID is id of 
+	 * is.idega.idegaweb.egov.application.data.Application, not <code>null</code>;
+	 * @param taskID is {@link TaskInstance#getId()}, which {@link Document}
+	 * is required, when <code>null</code>, then first task of new 
+	 * {@link ProcessInstance} will be provided;
+	 * @param user is {@link User}, who can submit
+	 * {@link Document}, not <code>null</code>;
+	 * @param language of form to be translated to, 
+	 * language of required service will be used when <code>null</code>;
+	 * @return {@link Document} filled with starting values and ready for 
+	 * XSLT transformation or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Document getPreffiledDocumentInXML(
+			String applicationID, 
+			String taskID,
+			User user,
+			String language);
 }
