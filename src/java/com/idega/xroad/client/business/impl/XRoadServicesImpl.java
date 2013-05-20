@@ -598,9 +598,9 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		GetXFormLabelsResponseE xFormLabelsResponseE = null;
 		try {
 			xFormLabelsResponseE = getEhubserviceServiceStub().getXFormLabels(
-					xFormLabelsE , getConsumer(), getProducer(), 
-					getUserId(getOldUser(getCurrentUser())), getServiceID(serviceProviderID), 
-					getService(XRoadClientConstants.SERVICE_GET_XFORMS_LABELS), 
+					xFormLabelsE , getConsumer(), getProducer(),
+					getUserId(getOldUser(getCurrentUser())), getServiceID(serviceProviderID),
+					getService(XRoadClientConstants.SERVICE_GET_XFORMS_LABELS),
 					getIssue("Test issue"));
 		} catch (RemoteException e) {
 			getLogger().log(Level.WARNING, "Unable to get: " +
