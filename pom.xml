@@ -22,6 +22,12 @@
 	</developers>
 
 	<dependencies>
+		<!-- Platform -->
+		<dependency>
+			<groupId>com.idega.block.platform</groupId>
+			<artifactId>com.idega.core</artifactId>
+		</dependency>
+	
 		<!-- Addons -->
 		<dependency>
 			<groupId>com.idega.block.addon</groupId>
