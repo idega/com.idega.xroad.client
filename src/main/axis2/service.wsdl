@@ -186,7 +186,10 @@
                           <appinfo>Used by the system to refer to the case</appinfo>
                         </annotation>
                       </element>
-                      <element name="typeLabel" type="tns:labelType">
+                      <element 
+                      	name="typeLabel" 
+                      	type="tns:labelType"
+                      	nillable="true">
                         <annotation>
                           <appinfo>Identifies the type of the case (e.g. "Application
                             for parking
@@ -194,12 +197,18 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="nameLabel" type="tns:labelType">
+                      <element 
+                      	name="nameLabel" 
+                      	type="tns:labelType"
+                      	nillable="true">
                         <annotation>
                           <appinfo>Identifies the particular case</appinfo>
                         </annotation>
                       </element>
-                      <element name="statusLabel" type="tns:labelType">
+                      <element 
+                      	name="statusLabel" 
+                      	type="tns:labelType"
+                      	nillable="true">
                         <annotation>
                           <appinfo>Identifies the processing step of the case (e.g.
                             "completed", "in
@@ -207,7 +216,10 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="lastOperationDate" type="date">
+                      <element 
+                      	name="lastOperationDate" 
+                      	type="date" 
+                      	nillable="true">
                         <annotation>
                           <appinfo>Indicates when the case was last time modified in
                             the
@@ -217,8 +229,10 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="nextOperationTime" type="dateTime" minOccurs="0"
-                        maxOccurs="1">
+                      <element
+                      	name="nextOperationTime" 
+                      	type="dateTime" 
+                      	nillable="true">
                         <annotation>
                           <appinfo>Case next operation time indicates when is the last
                             possible time
@@ -237,7 +251,10 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="official" type="string">
+                      <element 
+                      	name="official" 
+                      	type="string" 
+                      	nillable="true">
                         <annotation>
                           <appinfo>Identifies person who is responsible for handling
                             of
@@ -294,13 +311,19 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="statusLabel" type="tns:labelType">
+                      <element 
+                      	name="statusLabel" 
+                      	type="tns:labelType"
+                      	nillable="true">
                         <annotation>
                           <appinfo>Contains the status of the case for this step
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="operationDate" type="date">
+                      <element 
+                      	name="operationDate" 
+                      	type="date"
+                      	nillable="true">
                         <annotation>
                           <appinfo>Indicates when was the operation performed
                           </appinfo>
@@ -312,12 +335,19 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="official" type="string">
+                      <element 
+                      	name="official" 
+                      	type="string"
+                      	nillable="true">
                         <annotation>
                           <appinfo>Indicates which person performed the step</appinfo>
                         </annotation>
                       </element>
-                      <element name="documentId" type="string" minOccurs="0" maxOccurs="1">
+                      <element 
+                      	name="documentId" 
+                      	type="string"
+                      	nillable="true"
+                      	maxOccurs="unbounded">
                         <annotation>
                           <appinfo>Identifies additional document that is associated
                             with the
@@ -326,8 +356,22 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="stepName" type="string"/>
-                      <element name="stepUrl" type="string"/>
+                      <element 
+                      	name="submitted" 
+                      	type="boolean" 
+                      	nillable="true">
+                        <annotation>
+                          <appinfo>Identifies is step task is submitted or not</appinfo>
+                        </annotation>
+                      </element>
+                      <element 
+                      	name="stepName" 
+                      	type="string"
+                      	nillable="true"/>
+                      <element 
+                      	name="stepUrl" 
+                      	type="string"
+                      	nillable="true"/>
                     </sequence>
                   </complexType>
                 </element>
@@ -440,10 +484,18 @@
                           </appinfo>
                         </annotation>
                       </element>
-                      <element name="official" type="string">
+                      <element 
+                      	name="official" 
+                      	type="string"
+                      	nillable="true">
                         <annotation>
                           <appinfo>Identifies the person that sent the message
                           </appinfo>
+                        </annotation>
+                      </element>
+                      <element name="read" type="boolean" nillable="true">
+                        <annotation>
+                          <appinfo>Tells if message is read</appinfo>
                         </annotation>
                       </element>
                     </sequence>
@@ -580,18 +632,23 @@
         <annotation>
           <appinfo>Describes request content, used both in request and response</appinfo>
         </annotation>
-        <simpleContent>
-          <extension base="string">
-            <attribute name="dummy" type="string" />
-          </extension>
-        </simpleContent>
+        <sequence>
+          <element name="citizenId" type="string">
+          	<annotation>
+              <appinfo>Notifications owner personal ID</appinfo>
+            </annotation>
+          </element>
+          <element name="serviceProviderId" type="string"></element>
+        </sequence>
       </complexType>
 
       <complexType name="GetNotifications">
         <annotation>
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
-        <element name="request" type="tns:GetNotificationsRequest"/>
+        <sequence>
+          <element name="request" type="tns:GetNotificationsRequest"/>
+        </sequence>
       </complexType>
 
       <complexType name="GetNotificationsResponse">
@@ -607,8 +664,16 @@
                   <complexType>
                     <sequence>
                       <element name="citizenId" type="string"/>
+                      	<annotation>
+                          <appinfo>Personal ID of notifications owner</appinfo>
+                        </annotation>
                       <element name="textLabel" type="tns:labelType"/>
-                      <element name="caseId" type="string"/>
+                      <element name="caseId" type="string" nillable="true"/>
+                      <element name="notificationId" type="string" nillable="true">
+                      	<annotation>
+                          <appinfo>Identification number of notification</appinfo>
+                        </annotation>
+                      </element>
                       <element name="orgLabel" type="tns:labelType">
                         <annotation>
                           <appinfo>Label of the organization sending the
