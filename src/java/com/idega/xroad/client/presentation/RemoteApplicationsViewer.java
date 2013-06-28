@@ -188,19 +188,20 @@ public class RemoteApplicationsViewer extends Block {
 				null, 
 				iwc.getCurrentUser(), 
 				iwc.getCurrentLocale().getLanguage());
-		
 		if (xformDocument == null) {
 			return null;
 		}
 		
-		Document representation = getComponentsGenerator(iwc)
-				.generateHtmlRepresentation(xformDocument);
-		if (representation == null) {
-			return null;
-		}
+//		return xformDocument;
 		
+//		Document representation = getComponentsGenerator(iwc)
+//				.generateHtmlRepresentation(xformDocument);
+//		if (representation == null) {
+//			return null;
+//		}
+//		
 		RemoteFormViewer rfv = new RemoteFormViewer();
-		rfv.setXFormsDocument(representation);		
+		rfv.setXFormsDocument(xformDocument);
 		return rfv;
 	}
 	
