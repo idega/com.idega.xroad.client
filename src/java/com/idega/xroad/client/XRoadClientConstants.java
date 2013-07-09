@@ -95,7 +95,7 @@ public interface XRoadClientConstants {
 
 	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
 	
-	public static final String SERVICE_PRODUCER = "ehubservice";
+	public static final String SERVICE_PRODUCER = "db01";
 	public static final String SERVICE_CONSUMER = "ehub"; 
 	
 	public static final String 

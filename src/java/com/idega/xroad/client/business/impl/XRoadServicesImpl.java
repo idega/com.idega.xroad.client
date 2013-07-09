@@ -85,6 +85,7 @@ package com.idega.xroad.client.business.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.logging.Level;
 
 import javax.activation.DataHandler;
@@ -101,10 +102,13 @@ import com.idega.block.process.data.Case;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.core.business.DefaultSpringBean;
+import com.idega.core.location.data.Address;
+import com.idega.core.location.data.Country;
 import com.idega.user.business.UserBusiness;
 import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
 import com.idega.util.CoreUtil;
+import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 import com.idega.util.xml.XmlUtil;
@@ -918,6 +922,25 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		return response.getNotification();
 	}
 	
+	protected String getCountry(User user) {
+		if (user == null) {
+			return null;
+		}
+		
+		Collection<Address> addresses = user.getAddresses();
+		if (ListUtil.isEmpty(addresses)) {
+			return null;
+		}
+		
+		Address home = addresses.iterator().next();
+		Country country = home.getCountry();
+		if (country == null) {
+			return null;
+		}
+		
+		return country.getIsoAbbreviation();
+	}
+	
 	protected UserId getUserId(User user) {
 		if (user == null) {
 			return null;
@@ -926,6 +949,11 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		UserId userID = getInstantiatedObject(UserId.class);
 		if (userID == null) {
 			return null;
+		}
+		
+		String country = getCountry(user);
+		if (!StringUtil.isEmpty(country)) {
+			userID.setUserId(country + user.getPersonalID());
 		}
 		
 		userID.setUserId(user.getPersonalID());
@@ -980,8 +1008,7 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 			return null;
 		}
 
-		id.setId(XRoadClientConstants.SERVICE_PRODUCER + 
-				CoreConstants.DOT + serviceID);
+		id.setId(serviceID);
 		return id;
 	}
 	
