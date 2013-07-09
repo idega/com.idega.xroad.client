@@ -89,12 +89,16 @@ import java.util.logging.Level;
 
 import javax.activation.DataHandler;
 import javax.ejb.FinderException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis2.AxisFault;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.idega.block.form.data.XForm;
 import com.idega.block.process.data.Case;
@@ -108,6 +112,7 @@ import com.idega.util.CoreUtil;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 import com.idega.util.xml.XmlUtil;
+import com.idega.xformsmanager.manager.XFormsManagerFactory;
 import com.idega.xroad.client.XRoadClientConstants;
 import com.idega.xroad.client.business.XRoadServices;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub;
@@ -192,6 +197,9 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	
 	@Autowired
 	private XRoadDAO xroadDAO;
+	
+	@Autowired
+	private XFormsManagerFactory xformsManagerFactory;
 
 	/*
 	 * (non-Javadoc)
@@ -290,8 +298,30 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	@Override
 	public Document getPreffiledDocumentInXML(String applicationID,
 			String taskID, User user, String language) {
-		return XmlUtil.getDocument(
-				getPreffiledDocument(applicationID, taskID, user, language));
+		InputStream documentInputStream = getPreffiledDocument(applicationID, taskID, user, language);
+		if(documentInputStream == null){
+			return null;
+		}
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		factory.setXIncludeAware(true);
+		DocumentBuilder documentBuilder;
+		Document document = null;
+		try {
+			documentBuilder = factory.newDocumentBuilder();
+			document = documentBuilder.parse(documentInputStream);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return document;
 	}
 	
 	/*
