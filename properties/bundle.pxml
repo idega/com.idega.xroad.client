@@ -9,7 +9,8 @@
     <key>
       <name>iw_components</name>
       <value>
-        <map />
+        <map>
+        </map>
       </value>
       <type>map</type>
     </key>

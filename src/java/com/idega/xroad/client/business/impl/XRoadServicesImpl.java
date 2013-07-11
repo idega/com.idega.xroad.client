@@ -89,12 +89,16 @@ import java.util.logging.Level;
 
 import javax.activation.DataHandler;
 import javax.ejb.FinderException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis2.AxisFault;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.idega.block.form.data.XForm;
 import com.idega.block.process.data.Case;
@@ -108,6 +112,7 @@ import com.idega.util.CoreUtil;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 import com.idega.util.xml.XmlUtil;
+import com.idega.xformsmanager.manager.XFormsManagerFactory;
 import com.idega.xroad.client.XRoadClientConstants;
 import com.idega.xroad.client.business.XRoadServices;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub;
@@ -134,6 +139,11 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListRequest;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListResponse;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetMessagesListResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetNotifications;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetNotificationsE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetNotificationsRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetNotificationsResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetNotificationsResponseE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocument;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocumentE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetPrefilledDocumentRequest;
@@ -154,12 +164,14 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Issue;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LangType;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Notification_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Producer;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type10;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type12;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type3;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type5;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type6;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type7;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type8;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Response_type9;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Service;
@@ -185,6 +197,9 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	
 	@Autowired
 	private XRoadDAO xroadDAO;
+	
+	@Autowired
+	private XFormsManagerFactory xformsManagerFactory;
 
 	/*
 	 * (non-Javadoc)
@@ -283,8 +298,30 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	@Override
 	public Document getPreffiledDocumentInXML(String applicationID,
 			String taskID, User user, String language) {
-		return XmlUtil.getDocument(
-				getPreffiledDocument(applicationID, taskID, user, language));
+		InputStream documentInputStream = getPreffiledDocument(applicationID, taskID, user, language);
+		if(documentInputStream == null){
+			return null;
+		}
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		factory.setXIncludeAware(true);
+		DocumentBuilder documentBuilder;
+		Document document = null;
+		try {
+			documentBuilder = factory.newDocumentBuilder();
+			document = documentBuilder.parse(documentInputStream);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return document;
 	}
 	
 	/*
@@ -503,7 +540,7 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	@Override
 	public Message_type0[] getMessageEntries(String serviceProviderID,
 			String personalID) {
-		return getMessageEntries(serviceProviderID, getUser(personalID));
+		return getMessageEntries(serviceProviderID, getUser(personalID), null);
 	}
 	
 	/*
@@ -511,11 +548,7 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 	 * @see com.idega.xroad.client.business.XRoadServices#getMessageEntries(java.lang.String, com.idega.user.data.User)
 	 */
 	@Override
-	public Message_type0[] getMessageEntries(String serviceProviderID, User user) {
-		if (StringUtil.isEmpty(serviceProviderID)) {
-			serviceProviderID = "noServiceProvider";
-		}
-		
+	public Message_type0[] getMessageEntries(String serviceProviderID, User user, String caseId) {
 		if (user == null) {
 			return null;
 		}
@@ -852,6 +885,67 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		}
 
 		return response.getServiceEntry();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getNotifications(com.idega.user.data.User)
+	 */
+	@Override
+	public Notification_type0[] getNotifications(User user, String serviceProviderId) {
+		if (user == null) {
+			return null;
+		}
+		
+		GetNotificationsRequest notificationsRequest = getInstantiatedObject(
+				GetNotificationsRequest.class);
+		notificationsRequest.setCitizenId(user.getPersonalID());
+		notificationsRequest.setServiceProviderId(serviceProviderId);
+		
+		GetNotifications notifications = getInstantiatedObject(
+				GetNotifications.class);
+		notifications.setRequest(notificationsRequest);
+		
+		GetNotificationsE notificationsE = getInstantiatedObject(
+				GetNotificationsE.class);
+		notificationsE.setGetNotifications(notifications);
+		
+		GetNotificationsResponseE notificationResponseE = null;
+		try {
+			notificationResponseE = getEhubserviceServiceStub().getNotifications(
+					notificationsE, 
+					getConsumer(), 
+					getProducer(), 
+					getUserId(user), 
+					getServiceID(serviceProviderId), 
+					getService(XRoadClientConstants.SERVICE_GET_NOTIFICATIONS), 
+					getIssue("Testing"));
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, "Failed to get notifications: ", e);
+		}
+		
+		if (notificationResponseE == null) {
+			getLogger().warning("Unable to get " + GetNotificationsResponseE.class + 
+					" by user: " + user);
+			return null;
+		}
+		
+		GetNotificationsResponse notificationsResponse = notificationResponseE
+				.getGetNotificationsResponse();
+		if (notificationsResponse == null) {
+			getLogger().warning("Unable to get " + GetNotificationsResponse.class + 
+					" by user: " + user);
+			return null;
+		}
+		
+		Response_type7 response = notificationsResponse.getResponse();
+		if (response == null) {
+			getLogger().warning("Unable to get " + Response_type7.class + 
+					" by user: " + user);
+			return null;
+		}
+		
+		return response.getNotification();
 	}
 	
 	protected UserId getUserId(User user) {

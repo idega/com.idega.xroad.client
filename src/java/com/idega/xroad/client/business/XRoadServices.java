@@ -98,6 +98,7 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseProcessingStep_typ
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message_type0;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Notification_type0;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
 
 /**
@@ -222,11 +223,12 @@ public interface XRoadServices {
 	 * {@link User}.</p>
 	 * @param serviceProviderID
 	 * @param user to get messages of, not <code>null</code>;
+	 * @param caseId TODO
 	 * @return data about {@link Message}s or {@link User} or 
 	 * <code>null</code> on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public Message_type0[] getMessageEntries(String serviceProviderID, User user);
+	public Message_type0[] getMessageEntries(String serviceProviderID, User user, String caseId);
 
 	/**
 	 * 
@@ -455,4 +457,13 @@ public interface XRoadServices {
 			String taskID,
 			User user,
 			String language);
+
+	/**
+	 * 
+	 * <p>Queries X-Road for notifications for given user</p>
+	 * @param user to get notifications for, not <code>null</code>;
+	 * @return notifications for {@link User} or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Notification_type0[] getNotifications(User user, String serviceProviderId);
 }
