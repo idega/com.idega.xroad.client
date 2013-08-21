@@ -539,11 +539,6 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		return getMessageEntries(serviceProviderID, getUser(personalID), null);
 	}
 
-	@Override
-	public Message_type0[] getMessageEntries(String serviceProviderID, User user) {
-		return getMessageEntries(serviceProviderID, user, null);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see com.idega.xroad.client.business.XRoadServices#getMessageEntries(java.lang.String, com.idega.user.data.User)
@@ -567,13 +562,14 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		GetMessagesListResponseE messageListResponseE = null;
 		try {
 			messageListResponseE = getEhubserviceServiceStub().getMessagesList(
-					messagesListE ,
+					messagesListE,
 					getConsumer(),
 					getProducer(),
 					getUserId(user),
 					getServiceID(serviceProviderID),
 					getService(XRoadClientConstants.SERVICE_GET_MESSAGES_LIST),
-					getIssue("Some issue"));
+					getIssue("Some issue")
+			);
 		} catch (RemoteException e) {
 			getLogger().log(Level.WARNING,
 					"Unable to get " + GetMessagesListResponseE.class.getName(), e);

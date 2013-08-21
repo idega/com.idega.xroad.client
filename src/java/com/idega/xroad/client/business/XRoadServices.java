@@ -229,7 +229,6 @@ public interface XRoadServices {
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Message_type0[] getMessageEntries(String serviceProviderID, User user, String caseId);
-	public Message_type0[] getMessageEntries(String serviceProviderID, User user);
 
 	/**
 	 *
