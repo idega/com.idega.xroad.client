@@ -181,6 +181,23 @@
             type="base64Binary" 
             maxOccurs="1" 
             minOccurs="0"/>
+          <element
+          	name="iconURI"
+          	type="string"/>
+          <element
+          	name="serviceURI"
+          	type="string"/>
+          <element
+            name="subscribers"
+            type="tns:User"
+            maxOccurs="unbounded"
+            minOccurs="0"/>
+          <element
+            name="requiresSecureSession"
+            type="boolean"/>
+          <element
+            name="companyId"
+            tyep="string"/>
         </sequence>
       </complexType>
 
@@ -430,6 +447,12 @@
             name="stepUrl" 
             type="string"
             nillable="true"/>
+          <element
+            name="iconURI"
+            type="string"/>
+          <element
+            name="sender"
+            type="tns:User"/>
         </sequence>
       </complexType>
 
@@ -549,6 +572,16 @@
               </appinfo>
             </annotation>
           </element>
+          <element
+            name="sender"
+            type="tns:User"
+            minOccurs="1"
+            maxOccurs="1"/>
+          <element
+          	name="receivers"
+          	type="tns:User"
+          	minOccurs="1"
+          	maxOccurs="unbounded"/>
           <element 
             name="subject" 
             type="string"/>
@@ -556,11 +589,13 @@
             name="body" 
             type="string"/>
           <element 
+            name="viewURI" 
+            type="string"/>
+          <element 
             name="date" 
             type="date">
             <annotation>
-              <appinfo>Indicates when the message was sent to the citizen
-              </appinfo>
+              <appinfo>Indicates when the message was sent to the citizen</appinfo>
             </annotation>
           </element>
           <element 
@@ -586,6 +621,21 @@
             nillable="true">
             <annotation>
               <appinfo>Tells if message is read</appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
+
+      <complexType name="User">
+        <annotation>
+          <appinfo>Bean for receivers or senders</appinfo>
+        </annotation>
+        <sequence>
+          <element name="name" type="string"/>
+          <element name="email" type="string"/>
+          <element name="identificationNumber" type="string">
+            <annotation>
+              <appinfo>User id or personal id</appinfo>
             </annotation>
           </element>
         </sequence>
