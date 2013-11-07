@@ -6,7 +6,7 @@
     <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ref="http://ws-i.org/profiles/basic/1.1/xsd"
       xmlns:tns="http://ehubservice.ee.x-rd.net/producer/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       targetNamespace="http://ehubservice.ee.x-rd.net/producer/">
-      <import namespace="http://x-rd.net/xsd/xroad.xsd" schemaLocation="../../../resources/xsd/xroad.xsd" />
+      <import namespace="http://x-rd.net/xsd/xroad.xsd" schemaLocation="http://x-rd.net/xsd/xroad.xsd" />
 
       <!-- <import namespace="http://ws-i.org/profiles/basic/1.1/xsd" -->
       <!-- schemaLocation="http://ws-i.org/profiles/basic/1.1/swaref.xsd" /> -->
@@ -39,6 +39,12 @@
       <element name="GetNotifications" type="tns:GetNotifications"></element>
       <element name="GetNotificationsResponse" type="tns:GetNotificationsResponse"></element>
 
+      <element name="MarkCaseAsRead" type="tns:MarkCaseAsRead"></element>
+      <element name="MarkCaseAsReadResponse" type="tns:MarkCaseAsReadResponse"></element>
+
+      <element name="MarkNotificationAsRead" type="tns:MarkNotificationAsRead"></element>
+      <element name="MarkNotificationAsReadResponse" type="tns:MarkNotificationAsReadResponse"></element>
+
       <!-- Request-response declarations - end -->
 
       <!-- Request-response types - start -->
@@ -67,33 +73,49 @@
         </sequence>
       </complexType>
 
-      <complexType name="GetXFormLabelsResponse">
+      <complexType 
+        name="GetXFormLabelsResponse">
         <annotation>
           <appinfo>Corresponds to response message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetXFormLabelsRequest" />
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="labelPair" maxOccurs="unbounded" minOccurs="0">
-                  <complexType>
-                    <sequence>
-                      <element name="key" type="string">
-                        <annotation>
-                          <appinfo>Keyword for a label</appinfo>
-                        </annotation>
-                      </element>
-                      <element name="label" type="string">
-                        <annotation>
-                          <appinfo>Translation for a given language and form</appinfo>
-                        </annotation>
-                      </element>
-                    </sequence>
-                  </complexType>
-                </element>
-              </sequence>
-            </complexType>
+          <element 
+            name="request" 
+            type="tns:GetXFormLabelsRequest" />
+          <element 
+            name="response"
+            type="tns:XFormLabel"/>
+        </sequence>
+      </complexType>
+
+	  <complexType
+        name="XFormLabel">
+        <sequence>
+          <element 
+            name="labelPairs"
+            maxOccurs="unbounded" 
+            minOccurs="0"
+            type="tns:LabelPair">
+          </element>
+        </sequence>
+      </complexType>
+
+	  <complexType
+	    name="LabelPair">
+        <sequence>
+          <element 
+            name="key" 
+            type="string">
+            <annotation>
+              <appinfo>Keyword for a label</appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="label" 
+            type="string">
+            <annotation>
+              <appinfo>Translation for a given language and form</appinfo>
+            </annotation>
           </element>
         </sequence>
       </complexType>
@@ -116,31 +138,49 @@
         </sequence>
       </complexType>
 
-      <complexType name="GetServiceListResponse">
+      <complexType 
+        name="GetServiceListResponse">
         <annotation>
           <appinfo>Corresponds to response message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetServiceListRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="serviceEntry" maxOccurs="unbounded" minOccurs="0">
-                  <complexType>
-                    <sequence>
-                      <element name="id" type="string">
-                        <annotation>
-                          <appinfo>Used by the system to refer the service</appinfo>
-                        </annotation>
-                      </element>
-                      <element name="nameLabel" type="tns:labelType"></element>
-                      <element name="icon" type="base64Binary" maxOccurs="1" minOccurs="0"></element>
-                    </sequence>
-                  </complexType>
-                </element>
-              </sequence>
-            </complexType>
+          <element 
+            name="request" 
+            type="tns:GetServiceListRequest"/>
+          <element 
+            name="response" 
+            type="tns:ServiceList"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="ServiceList">
+        <sequence>
+          <element 
+            name="serviceEntries" 
+            maxOccurs="unbounded" 
+            minOccurs="0"
+            type="tns:ServiceEntry">
           </element>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="ServiceEntry">
+        <sequence>
+          <element name="id" type="string">
+            <annotation>
+              <appinfo>Used by the system to refer the service</appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="nameLabel" 
+            type="tns:labelType"/>
+          <element 
+            name="icon" 
+            type="base64Binary" 
+            maxOccurs="1" 
+            minOccurs="0"/>
         </sequence>
       </complexType>
 
@@ -175,102 +215,108 @@
         </annotation>
         <sequence>
           <element name="request" type="tns:GetCaseListRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="case" maxOccurs="unbounded" minOccurs="0">
-                  <complexType>
-                    <sequence>
-                      <element name="id" type="string">
-                        <annotation>
-                          <appinfo>Used by the system to refer to the case</appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="typeLabel" 
-                      	type="tns:labelType"
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Identifies the type of the case (e.g. "Application
-                            for parking
-                            permit")
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="nameLabel" 
-                      	type="tns:labelType"
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Identifies the particular case</appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="statusLabel" 
-                      	type="tns:labelType"
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Identifies the processing step of the case (e.g.
-                            "completed", "in
-                            progress", "waiting for clarifications")
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="lastOperationDate" 
-                      	type="date" 
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Indicates when the case was last time modified in
-                            the
-                            service
-                            provider
-                            system
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element
-                      	name="nextOperationTime" 
-                      	type="dateTime" 
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Case next operation time indicates when is the last
-                            possible time
-                            when
-                            the case will be modified in the system
-                            again
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element name="orgLabel" type="tns:labelType">
-                        <annotation>
-                          <appinfo>Identifies the organization that is currently
-                            responsible for
-                            handling
-                            the case
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="official" 
-                      	type="string" 
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Identifies person who is responsible for handling
-                            of
-                            the case at
-                            the
-                            moment
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element name="serviceId" type="string"></element>
-                    </sequence>
-                  </complexType>
-                </element>
-              </sequence>
-            </complexType>
+          <element name="response" type="tns:CaseList"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+      	name="CaseList">
+        <sequence>
+          <element 
+            name="cases" 
+            maxOccurs="unbounded" 
+            minOccurs="0"
+            type="tns:Case"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+      	name="Case">
+        <sequence>
+          <element name="id" type="string">
+            <annotation>
+              <appinfo>Used by the system to refer to the case</appinfo>
+            </annotation>
           </element>
+          <element 
+          	name="typeLabel" 
+          	type="tns:labelType"
+          	nillable="true">
+            <annotation>
+              <appinfo>Identifies the type of the case (e.g. "Application
+                for parking
+                permit")
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+          	name="nameLabel" 
+          	type="tns:labelType"
+          	nillable="true">
+            <annotation>
+              <appinfo>Identifies the particular case</appinfo>
+            </annotation>
+          </element>
+          <element 
+          	name="statusLabel" 
+          	type="tns:labelType"
+          	nillable="true">
+            <annotation>
+              <appinfo>Identifies the processing step of the case (e.g.
+                "completed", "in
+                progress", "waiting for clarifications")
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+          	name="lastOperationDate" 
+          	type="date" 
+          	nillable="true">
+            <annotation>
+              <appinfo>Indicates when the case was last time modified in
+                the
+                service
+                provider
+                system
+              </appinfo>
+            </annotation>
+          </element>
+          <element
+          	name="nextOperationTime" 
+          	type="dateTime" 
+          	nillable="true">
+            <annotation>
+              <appinfo>Case next operation time indicates when is the last
+                possible time
+                when
+                the case will be modified in the system
+                again
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="orgLabel" type="tns:labelType">
+            <annotation>
+              <appinfo>Identifies the organization that is currently
+                responsible for
+                handling
+                the case
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+          	name="official" 
+          	type="string" 
+          	nillable="true">
+            <annotation>
+              <appinfo>Identifies person who is responsible for handling
+                of
+                the case at
+                the
+                moment
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="serviceId" type="string"></element>
         </sequence>
       </complexType>
 
@@ -299,85 +345,91 @@
         </annotation>
         <sequence>
           <element name="request" type="tns:GetCaseDetailsRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="caseProcessingStep" maxOccurs="unbounded" minOccurs="0">
-                  <complexType>
-                    <sequence>
-                      <element name="stepId" type="string">
-                        <annotation>
-                          <appinfo>Used by system to identify case processing step
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="statusLabel" 
-                      	type="tns:labelType"
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Contains the status of the case for this step
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="operationDate" 
-                      	type="date"
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Indicates when was the operation performed
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element name="orgLabel" type="tns:labelType">
-                        <annotation>
-                          <appinfo>Indicates which organization performed the step
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="official" 
-                      	type="string"
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Indicates which person performed the step</appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="documentId" 
-                      	type="string"
-                      	nillable="true"
-                      	maxOccurs="unbounded">
-                        <annotation>
-                          <appinfo>Identifies additional document that is associated
-                            with the
-                            processing
-                            step
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="submitted" 
-                      	type="boolean" 
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Identifies is step task is submitted or not</appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="stepName" 
-                      	type="string"
-                      	nillable="true"/>
-                      <element 
-                      	name="stepUrl" 
-                      	type="string"
-                      	nillable="true"/>
-                    </sequence>
-                  </complexType>
-                </element>
-              </sequence>
-            </complexType>
+          <element name="response" type="tns:CaseDetails"/>
+        </sequence>
+      </complexType>
+
+	  <complexType
+	    name="CaseDetails">
+        <sequence>
+          <element 
+            name="caseProcessingStep" 
+            maxOccurs="unbounded" 
+            minOccurs="0"
+            type="tns:CaseStep"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+      	name="CaseStep">
+        <sequence>
+          <element name="stepId" type="string">
+            <annotation>
+              <appinfo>Used by system to identify case processing step
+              </appinfo>
+            </annotation>
           </element>
+          <element 
+            name="statusLabel" 
+            type="tns:labelType"
+            nillable="true">
+            <annotation>
+              <appinfo>Contains the status of the case for this step
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="operationDate" 
+            type="date"
+            nillable="true">
+            <annotation>
+              <appinfo>Indicates when was the operation performed
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="orgLabel" type="tns:labelType">
+            <annotation>
+              <appinfo>Indicates which organization performed the step
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="official" 
+            type="string"
+            nillable="true">
+            <annotation>
+              <appinfo>Indicates which person performed the step</appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="documentId" 
+            type="string"
+            nillable="true"
+            maxOccurs="unbounded">
+            <annotation>
+              <appinfo>Identifies additional document that is associated
+                with the
+                processing
+                step
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="submitted" 
+            type="boolean" 
+            nillable="true">
+            <annotation>
+              <appinfo>Identifies is step task is submitted or not</appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="stepName" 
+            type="string"
+            nillable="true"/>
+          <element 
+            name="stepUrl" 
+            type="string"
+            nillable="true"/>
         </sequence>
       </complexType>
 
@@ -400,29 +452,37 @@
         </sequence>
       </complexType>
 
-      <complexType name="GetDocumentResponse">
+      <complexType 
+        name="GetDocumentResponse">
         <annotation>
           <appinfo>Corresponds to response message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetDocumentRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="document" type="base64Binary">
-                  <annotation>
-                    <appinfo>XML blob that contains the document</appinfo>
-                  </annotation>
-                </element>
-                <element name="xFormsTemplate" type="base64Binary">
-                  <annotation>
-                    <appinfo>XML blob that contains Xforms template for the
-                      document
-                    </appinfo>
-                  </annotation>
-                </element>
-              </sequence>
-            </complexType>
+          <element 
+            name="request" 
+            type="tns:GetDocumentRequest"/>
+          <element 
+            name="response" 
+            type="tns:Document"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="Document">
+        <sequence>
+          <element 
+            name="document" 
+            type="base64Binary">
+            <annotation>
+              <appinfo>XML blob that contains the document</appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="xFormsTemplate" 
+            type="base64Binary">
+            <annotation>
+              <appinfo>XML blob that contains Xforms template for the document</appinfo>
+            </annotation>
           </element>
         </sequence>
       </complexType>
@@ -452,57 +512,81 @@
         </sequence>
       </complexType>
 
-      <complexType name="GetMessagesListResponse">
+      <complexType 
+        name="GetMessagesListResponse">
         <annotation>
           <appinfo>Corresponds to response message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetMessagesListRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="message" maxOccurs="unbounded" minOccurs="0">
-                  <complexType>
-                    <sequence>
-                      <element name="id" type="string">
-                        <annotation>
-                          <appinfo>Used by the system to refer to the message
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element name="subject" type="string"></element>
-                      <element name="body" type="string"></element>
-                      <element name="date" type="date">
-                        <annotation>
-                          <appinfo>Indicates when the message was sent to the citizen
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element name="orgLabel" type="tns:labelType">
-                        <annotation>
-                          <appinfo>Identifies the organization that sent the message
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element 
-                      	name="official" 
-                      	type="string"
-                      	nillable="true">
-                        <annotation>
-                          <appinfo>Identifies the person that sent the message
-                          </appinfo>
-                        </annotation>
-                      </element>
-                      <element name="read" type="boolean" nillable="true">
-                        <annotation>
-                          <appinfo>Tells if message is read</appinfo>
-                        </annotation>
-                      </element>
-                    </sequence>
-                  </complexType>
-                </element>
-              </sequence>
-            </complexType>
+          <element 
+            name="request" 
+            type="tns:GetMessagesListRequest"/>
+          <element 
+            name="response" 
+            type="tns:MessagesList"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="MessagesList">
+        <sequence>
+          <element 
+            name="messages" 
+            maxOccurs="unbounded" 
+            minOccurs="0"
+            type="tns:Message"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="Message">
+        <sequence>
+          <element 
+            name="id" 
+            type="string">
+            <annotation>
+              <appinfo>Used by the system to refer to the message
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="subject" 
+            type="string"/>
+          <element 
+            name="body" 
+            type="string"/>
+          <element 
+            name="date" 
+            type="date">
+            <annotation>
+              <appinfo>Indicates when the message was sent to the citizen
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="orgLabel" 
+            type="tns:labelType">
+            <annotation>
+              <appinfo>Identifies the organization that sent the message
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+          	name="official" 
+          	type="string"
+          	nillable="true">
+            <annotation>
+              <appinfo>Identifies the person that sent the message
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="read" 
+            type="boolean" 
+            nillable="true">
+            <annotation>
+              <appinfo>Tells if message is read</appinfo>
+            </annotation>
           </element>
         </sequence>
       </complexType>
@@ -539,27 +623,36 @@
         </annotation>
         <sequence>
           <element name="request" type="tns:GetPrefilledDocumentRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="documentType" type="string" maxOccurs="1" minOccurs="0">
-                  <annotation>
-                    <appinfo>Associated document type that identifies the document
-                      type (Xforms
-                      specification)
-                      that is used to render the document
-                      to user
-                    </appinfo>
-                  </annotation>
-                </element>
-                <element name="document" type="base64Binary" maxOccurs="1" minOccurs="0">
-                  <annotation>
-                    <appinfo>XML blob that contains the prefilled document
-                    </appinfo>
-                  </annotation>
-                </element>
-              </sequence>
-            </complexType>
+          <element name="response" type="tns:PreffiledDocument"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+      	name="PreffiledDocument">
+        <sequence>
+          <element 
+            name="documentType" 
+            type="string" 
+            maxOccurs="1" 
+            minOccurs="0">
+            <annotation>
+              <appinfo>Associated document type that identifies the document
+                type (Xforms
+                specification)
+                that is used to render the document
+                to user
+              </appinfo>
+            </annotation>
+          </element>
+          <element 
+            name="document" 
+            type="base64Binary" 
+            maxOccurs="1" 
+            minOccurs="0">
+            <annotation>
+              <appinfo>XML blob that contains the prefilled document
+              </appinfo>
+            </annotation>
           </element>
         </sequence>
       </complexType>
@@ -595,35 +688,42 @@
 
       </complexType>
 
-      <complexType name="SubmitDocumentResponse">
+      <complexType 
+        name="SubmitDocumentResponse">
         <annotation>
           <appinfo>Corresponds to response message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:SubmitDocumentRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="submissionStatusLabel" type="tns:labelType">
-                  <annotation>
-                    <appinfo>indicates the result of the operation ok or not ok.
-                      And
-                      if
-                      possible the
-                      reason
-                      for error
-                    </appinfo>
-                  </annotation>
-                </element>
-                <element name="caseNameLabel" type="tns:labelType">
-                  <annotation>
-                    <appinfo>Contains the name of the case as will later shown in the
-                      case list
-                    </appinfo>
-                  </annotation>
-                </element>
-              </sequence>
-            </complexType>
+          <element 
+            name="request" 
+            type="tns:SubmitDocumentRequest"/>
+          <element 
+            name="response"
+            type="tns:SubmittedDocumentInfo">
+          </element>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="SubmittedDocumentInfo">
+        <sequence>
+          <element name="submissionStatusLabel" type="tns:labelType">
+            <annotation>
+              <appinfo>indicates the result of the operation ok or not ok.
+                And
+                if
+                possible the
+                reason
+                for error
+              </appinfo>
+            </annotation>
+          </element>
+          <element name="caseNameLabel" type="tns:labelType">
+            <annotation>
+              <appinfo>Contains the name of the case as will later shown in the
+                case list
+              </appinfo>
+            </annotation>
           </element>
         </sequence>
       </complexType>
@@ -647,7 +747,7 @@
           <appinfo>Corresponds to request message</appinfo>
         </annotation>
         <sequence>
-          <element name="request" type="tns:GetNotificationsRequest"/>
+        <element name="request" type="tns:GetNotificationsRequest"/>
         </sequence>
       </complexType>
 
@@ -657,36 +757,138 @@
         </annotation>
         <sequence>
           <element name="request" type="tns:GetNotificationsRequest"/>
-          <element name="response">
-            <complexType>
-              <sequence>
-                <element name="notification" maxOccurs="unbounded" minOccurs="0">
-                  <complexType>
-                    <sequence>
-                      <element name="citizenId" type="string"/>
-                      	<annotation>
-                          <appinfo>Personal ID of notifications owner</appinfo>
-                        </annotation>
-                      <element name="textLabel" type="tns:labelType"/>
-                      <element name="caseId" type="string" nillable="true"/>
-                      <element name="notificationId" type="string" nillable="true">
-                      	<annotation>
-                          <appinfo>Identification number of notification</appinfo>
-                        </annotation>
-                      </element>
-                      <element name="orgLabel" type="tns:labelType">
-                        <annotation>
-                          <appinfo>Label of the organization sending the
-                            notification
-                          </appinfo>
-                        </annotation>
-                      </element>
-                    </sequence>
-                  </complexType>
-                </element>
-              </sequence>
-            </complexType>
+          <element name="response" type="tns:NotificationsList"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="NotificationsList">
+        <sequence>
+          <element 
+            name="notifications" 
+            maxOccurs="unbounded" 
+            minOccurs="0"
+            type="tns:Notification"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="Notification">
+        <sequence>
+          <element 
+            name="citizenId" 
+            type="string"/>
+          	<annotation>
+              <appinfo>Personal ID of notifications owner</appinfo>
+            </annotation>
+          <element 
+            name="textLabel" 
+            type="tns:labelType"/>
+          <element 
+            name="caseId" 
+            type="string" 
+            nillable="true"/>
+          <element 
+            name="notificationId" 
+            type="string" 
+            nillable="true">
+          	<annotation>
+              <appinfo>Identification number of notification</appinfo>
+            </annotation>
           </element>
+          <element 
+            name="orgLabel" 
+            type="tns:labelType">
+            <annotation>
+              <appinfo>Label of the organization sending the
+                notification
+              </appinfo>
+            </annotation>
+          </element>
+        </sequence>
+      </complexType>
+
+      <complexType name="MarkCaseAsReadRequest">
+        <annotation>
+          <appinfo>Describes request content, used both in request and response</appinfo>
+        </annotation>
+        <sequence>
+          <element name="serviceProviderId" type="string"/>
+          <element name="serviceId" type="string"/>
+          <element name="caseId" type="string"/>
+          <element name="markAsRead" type="boolean"/>
+        </sequence>
+      </complexType>
+
+      <complexType name="MarkCaseAsRead">
+        <annotation>
+          <appinfo>Corresponds to request message</appinfo>
+        </annotation>
+        <sequence>
+          <element name="request" type="tns:MarkCaseAsReadRequest"></element>
+        </sequence>
+      </complexType>
+
+      <complexType 
+        name="MarkCaseAsReadResponse">
+        <annotation>
+          <appinfo>Corresponds to response message</appinfo>
+        </annotation>
+        <sequence>
+          <element 
+            name="request" 
+            type="tns:MarkCaseAsReadRequest"/>
+          <element 
+            name="response"
+            type="tns:MarkResult"/>
+        </sequence>
+      </complexType>
+
+      <complexType name="MarkNotificationAsReadRequest">
+        <annotation>
+          <appinfo>Describes request content, used both in request and response</appinfo>
+        </annotation>
+        <sequence>
+          <element name="serviceProviderId" type="string"/>
+          <element name="serviceId" type="string"/>
+          <element name="notificationId" type="string"/>
+          <element name="markAsRead" type="boolean"/>
+        </sequence>
+      </complexType>
+
+      <complexType name="MarkNotificationAsRead">
+        <annotation>
+          <appinfo>Corresponds to request message</appinfo>
+        </annotation>
+        <sequence>
+          <element name="request" type="tns:MarkNotificationAsReadRequest"></element>
+        </sequence>
+      </complexType>
+
+      <complexType name="MarkNotificationAsReadResponse">
+        <annotation>
+          <appinfo>Corresponds to response message</appinfo>
+        </annotation>
+        <sequence>
+          <element 
+            name="request" 
+            type="tns:MarkNotificationAsReadRequest"/>
+          <element 
+            name="response"
+            type="tns:MarkResult"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="MarkResult">
+        <sequence>
+          <element 
+            name="success" 
+            type="boolean"/>
+          <element 
+            name="message" 
+            type="string" 
+            minOccurs="0"/>
         </sequence>
       </complexType>
 
@@ -701,22 +903,34 @@
         </complexType>
       </element>
 
-      <element name="allowedMethodsResponse">
+      <element 
+        name="allowedMethodsResponse"
+        type="tns:AllowedMethodsResponse">
         <annotation>
           <appinfo>Corresponds to response message</appinfo>
         </annotation>
-        <complexType>
-          <sequence>
-            <element name="response">
-              <complexType>
-                <sequence>
-                  <element maxOccurs="unbounded" minOccurs="0" name="item" type="string" />
-                </sequence>
-              </complexType>
-            </element>
-          </sequence>
-        </complexType>
       </element>
+
+      <complexType
+        name="AllowedMethodsResponse">
+        <sequence>
+          <element 
+            name="response"
+            type="tns:AllowedMethodList"/>
+        </sequence>
+      </complexType>
+
+      <complexType
+        name="AllowedMethodList">
+        <sequence>
+          <element 
+            maxOccurs="unbounded" 
+            minOccurs="0" 
+            name="item" 
+            type="string"/>
+        </sequence>
+      </complexType>
+
       <!-- Meta-services - end -->
 
       <!-- Request-response types - end -->
@@ -828,6 +1042,24 @@
     <wsdl:part name="request" element="tns:GetNotifications">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="MarkCaseAsRead">
+    <wsdl:part name="request" element="tns:MarkCaseAsRead">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MarkCaseAsReadResponse">
+    <wsdl:part name="response" element="tns:MarkCaseAsReadResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MarkNotificationAsRead">
+    <wsdl:part name="request" element="tns:MarkNotificationAsRead">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="MarkNotificationAsReadResponse">
+    <wsdl:part name="response" element="tns:MarkNotificationAsReadResponse">
+    </wsdl:part>
+  </wsdl:message>
+
+  <!-- Meta service messages -->
   <wsdl:message name="allowedMethods">
     <wsdl:part name="request" element="tns:allowedMethods">
     </wsdl:part>
@@ -919,6 +1151,26 @@
       <wsdl:output message="tns:GetServiceListResponse" name="GetServiceListResponse">
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="MarkCaseAsRead">
+      <wsdl:documentation>
+        <xrd:title>MarkCaseAsRead</xrd:title>
+      </wsdl:documentation>
+      <wsdl:input message="tns:MarkCaseAsRead" name="MarkCaseAsRead">
+      </wsdl:input>
+      <wsdl:output message="tns:MarkCaseAsReadResponse" name="MarkCaseAsReadResponse">
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MarkNotificationAsRead">
+      <wsdl:documentation>
+        <xrd:title>MarkNotificationAsRead</xrd:title>
+      </wsdl:documentation>
+      <wsdl:input message="tns:MarkNotificationAsRead" name="MarkNotificationAsRead">
+      </wsdl:input>
+      <wsdl:output message="tns:MarkNotificationAsReadResponse" name="MarkNotificationAsReadResponse">
+      </wsdl:output>
+    </wsdl:operation>
+
+    <!-- Meta services -->
     <wsdl:operation name="allowedMethods">
       <wsdl:documentation>
         <xrd:title>allowedMethods</xrd:title>
@@ -1336,6 +1588,98 @@
         <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="MarkCaseAsRead">
+      <xrd:version>v1</xrd:version>
+      <wsdl:input name="MarkCaseAsRead">
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="consumer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="producer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="userId" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="id" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="service" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="issue" use="literal">
+        </soap:header>
+        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
+      </wsdl:input>
+      <wsdl:output name="MarkCaseAsReadResponse">
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="consumer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="producer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="userId" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="id" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="service" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="issue" use="literal">
+        </soap:header>
+        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MarkNotificationAsRead">
+      <xrd:version>v1</xrd:version>
+      <wsdl:input name="MarkNotificationAsRead">
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="consumer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="producer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="userId" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="id" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="service" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="issue" use="literal">
+        </soap:header>
+        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
+      </wsdl:input>
+      <wsdl:output name="MarkNotificationAsReadResponse">
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="consumer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="producer" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="userId" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="id" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="service" use="literal">
+        </soap:header>
+        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
+          part="issue" use="literal">
+        </soap:header>
+        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+
+    <!-- Meta services -->
     <wsdl:operation name="allowedMethods">
       <xrd:version>v1</xrd:version>
       <wsdl:input>
