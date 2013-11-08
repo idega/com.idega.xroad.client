@@ -170,6 +170,17 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Id;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Issue;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LangType;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsRead;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsRead;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkResult;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MessagesList;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Notification;
@@ -952,6 +963,129 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		}
 		
 		return response.getNotifications();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#doMarkCaseAsRead(com.idega.user.data.User, java.lang.String, java.lang.String, boolean)
+	 */
+	@Override
+	public boolean doMarkCaseAsRead(User user, 
+			String serviceProviderId,
+			String caseId,
+			boolean markAsRead) {
+		if (user == null) {
+			return Boolean.FALSE;
+		}
+
+		MarkCaseAsReadRequest request = getInstantiatedObject(MarkCaseAsReadRequest.class);
+		request.setMarkAsRead(markAsRead);
+		request.setCaseId(caseId);
+		request.setServiceProviderId(serviceProviderId);
+
+		MarkCaseAsRead markCaseAsRead = getInstantiatedObject(MarkCaseAsRead.class);
+		markCaseAsRead.setRequest(request);
+
+		MarkCaseAsReadE markCaseAsReadElement = getInstantiatedObject(MarkCaseAsReadE.class);
+		markCaseAsReadElement.setMarkCaseAsRead(markCaseAsRead);
+
+		MarkCaseAsReadResponseE markCaseAsReadResponseE = null;
+		try {
+			markCaseAsReadResponseE = getEhubserviceServiceStub().markCaseAsRead(
+					markCaseAsReadElement, 
+					getConsumer(), 
+					getProducer(), 
+					getUserId(user), 
+					getServiceID(serviceProviderId), 
+					getService(XRoadClientConstants.SERVICE_MARK_CASE_AS_READ), 
+					getIssue("Testing"));
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, "Failed to mark case by id: '" + caseId + "' cause of: ", e);
+		}
+
+		if (markCaseAsReadResponseE == null) {
+			getLogger().warning("Unable to get " + MarkCaseAsReadResponseE.class + 
+					" by user: " + user + " and case id: '" + caseId + "'" );
+			return Boolean.FALSE;
+		}
+
+		MarkCaseAsReadResponse markCaseAsReadResponse = markCaseAsReadResponseE.getMarkCaseAsReadResponse();
+		if (markCaseAsReadResponse == null) {
+			getLogger().warning("Unable to get " + MarkCaseAsReadResponse.class + 
+					" by user: " + user + " and case id: '" + caseId + "'" );
+			return Boolean.FALSE;
+		}
+		
+		MarkResult result = markCaseAsReadResponse.getResponse();
+		if (result == null) {
+			getLogger().warning("Unable to get " + MarkResult.class + 
+					" by user: " + user + " and case id: '" + caseId + "'" );
+			return Boolean.FALSE;
+		}
+
+		return result.getSuccess();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#doMarkNotificationAsRead(com.idega.user.data.User, java.lang.String, java.lang.String, boolean)
+	 */
+	@Override
+	public boolean doMarkNotificationAsRead(
+			User user, 
+			String serviceProviderId,
+			String notificationId,
+			boolean markAsRead) {
+		if (user == null) {
+			return Boolean.FALSE;
+		}
+		
+		MarkNotificationAsReadRequest request = getInstantiatedObject(MarkNotificationAsReadRequest.class);
+		request.setMarkAsRead(markAsRead);
+		request.setNotificationId(notificationId);
+		request.setServiceProviderId(serviceProviderId);
+
+		MarkNotificationAsRead markNotificationAsRead = getInstantiatedObject(MarkNotificationAsRead.class);
+		markNotificationAsRead.setRequest(request);
+
+		MarkNotificationAsReadE markNotificationAsReadElement = getInstantiatedObject(MarkNotificationAsReadE.class);
+		markNotificationAsReadElement.setMarkNotificationAsRead(markNotificationAsRead);
+
+		MarkNotificationAsReadResponseE markNotificationAsReadResponseE = null;
+		try {
+			markNotificationAsReadResponseE = getEhubserviceServiceStub().markNotificationAsRead(
+					markNotificationAsReadElement, 
+					getConsumer(), 
+					getProducer(), 
+					getUserId(user), 
+					getServiceID(serviceProviderId), 
+					getService(XRoadClientConstants.SERVICE_MARK_NOTIFICATION_AS_READ), 
+					getIssue("Testing"));
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, "Failed to mark notification by id: '" + notificationId + "' cause of: ", e);
+		}
+
+		if (markNotificationAsReadResponseE == null) {
+			getLogger().warning("Unable to get " + MarkNotificationAsReadResponseE.class + 
+					" by user: " + user + " and notification id: '" + notificationId + "'" );
+			return Boolean.FALSE;
+		}
+
+		MarkNotificationAsReadResponse markNotificationAsReadResponse = markNotificationAsReadResponseE.getMarkNotificationAsReadResponse();
+		if (markNotificationAsReadResponse == null) {
+			getLogger().warning("Unable to get " + MarkNotificationAsReadResponse.class + 
+					" by user: " + user + " and notification id: '" + notificationId + "'" );
+			return Boolean.FALSE;
+		}
+
+		MarkResult response = markNotificationAsReadResponse.getResponse();
+		if (response == null) {
+			getLogger().warning("Unable to get " + MarkResult.class + 
+					" by user: " + user + " and notification id: '" + notificationId + "'" );
+			return Boolean.FALSE;
+		}
+
+		return response.getSuccess();
 	}
 	
 	protected String getCountry(User user) {

@@ -464,4 +464,31 @@ public interface XRoadServices {
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Notification[] getNotifications(User user, String serviceProviderId);
+
+	/**
+	 * 
+	 * <p>TODO</p>
+	 * @param user
+	 * @param serviceProviderId
+	 * @return
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public boolean doMarkNotificationAsRead(
+			User user, 
+			String serviceProviderId,
+			String notificationId,
+			boolean markAsRead);
+
+	/**
+	 * 
+	 * <p>TODO</p>
+	 * @param user
+	 * @param serviceProviderId
+	 * @param caseId
+	 * @param markAsRead
+	 * @return
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public boolean doMarkCaseAsRead(User user, String serviceProviderId,
+			String caseId, boolean markAsRead);
 }
