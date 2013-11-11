@@ -584,10 +584,10 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 		GetMessagesListResponseE messageListResponseE = null;
 		try {
 			messageListResponseE = getEhubserviceServiceStub().getMessagesList(
-					messagesListE , 
-					getConsumer(), 
-					getProducer(), 
-					getUserId(user), 
+					messagesListE,
+					getConsumer(),
+					getProducer(),
+					getUserId(user),
 					getServiceID(serviceProviderID), 
 					getService(XRoadClientConstants.SERVICE_GET_MESSAGES_LIST), 
 					getIssue("Some issue"));

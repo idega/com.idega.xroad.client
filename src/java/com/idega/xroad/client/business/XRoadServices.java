@@ -91,6 +91,7 @@ import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.w3c.dom.Document;
 
 import com.idega.block.form.data.XForm;
+import com.idega.notifier.data.NotificationReceiverEntity;
 import com.idega.user.data.User;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseStep;
@@ -467,10 +468,10 @@ public interface XRoadServices {
 
 	/**
 	 * 
-	 * <p>TODO</p>
-	 * @param user
+	 * <p>Marks {@link Notification} as read in remote server.</p>
+	 * @param user who's {@link NotificationReceiverEntity}s should be searched, not <code>null</code>;
 	 * @param serviceProviderId
-	 * @return
+	 * @return <code>true</code> on sucess, <code>false</code> otherwise;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public boolean doMarkNotificationAsRead(
@@ -479,14 +480,16 @@ public interface XRoadServices {
 			String notificationId,
 			boolean markAsRead);
 
+	
 	/**
 	 * 
-	 * <p>TODO</p>
-	 * @param user
+	 * <p>Marks {@link com.idega.block.process.data.Case} as read on remote system.</p>
+	 * @param user who's {@link com.idega.block.process.data.Case}s should be searche, not <code>null</code>;
 	 * @param serviceProviderId
-	 * @param caseId
-	 * @param markAsRead
-	 * @return
+	 * @param caseId is {@link com.idega.block.process.data.Case#getPrimaryKey()} in remote system, not <code>null</code>;
+	 * @param markAsRead <code>true</code> if mark as read required,
+	 * <code>false</code> if mark as unread required;
+	 * @return <code>true</code> if marked, <code>false</code> otherwise;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public boolean doMarkCaseAsRead(User user, String serviceProviderId,
