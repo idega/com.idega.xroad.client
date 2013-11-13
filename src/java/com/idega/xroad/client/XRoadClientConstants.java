@@ -95,7 +95,7 @@ public interface XRoadClientConstants {
 
 	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
 	
-	public static final String SERVICE_PRODUCER = "ehubservice";
+	public static final String SERVICE_PRODUCER = "db01";
 	public static final String SERVICE_CONSUMER = "ehub"; 
 	
 	public static final String 
@@ -107,5 +107,7 @@ public interface XRoadClientConstants {
 		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
 		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
 		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
-		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications";
+		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications",
+		SERVICE_MARK_NOTIFICATION_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkNotificationAsRead",
+		SERVICE_MARK_CASE_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkCaseAsRead";
 }

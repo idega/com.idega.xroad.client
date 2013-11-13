@@ -85,21 +85,17 @@ package com.idega.xroad.client.business;
 import java.io.InputStream;
 import java.util.Locale;
 
+import javax.management.Notification;
+
+import org.apache.axis.wsdl.symbolTable.ServiceEntry;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.taskmgmt.def.Task;
 import org.jbpm.taskmgmt.exe.TaskInstance;
 import org.w3c.dom.Document;
 
 import com.idega.block.form.data.XForm;
-import com.idega.block.process.data.Case;
-import com.idega.block.process.message.data.Message;
+import com.idega.notifier.data.NotificationReceiverEntity;
 import com.idega.user.data.User;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseProcessingStep_type0;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case_type0;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair_type0;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message_type0;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Notification_type0;
-import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry_type0;
 
 /**
  * <p>Interface for communication with X-Road server</p>
@@ -120,7 +116,7 @@ public interface XRoadServices {
 	 * @return services by given criteria, or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public ServiceEntry_type0[] getServiceEntries(String serviceProviderID, String personalID);
+	public ServiceEntry[] getServiceEntries(String serviceProviderID, String personalID);
 
 	/**
 	 *
@@ -130,7 +126,7 @@ public interface XRoadServices {
 	 * @return  services by given criteria, or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public ServiceEntry_type0[] getServiceEntries(String serviceProviderID, User user);
+	public ServiceEntry[] getServiceEntries(String serviceProviderID, User user);
 
 	/**
 	 *
@@ -142,7 +138,7 @@ public interface XRoadServices {
 	 * @return data about {@link Case}s or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public Case_type0[] getCasesEntries(String serviceProviderID, String personalID);
+	public Case[] getCasesEntries(String serviceProviderID, String personalID);
 
 	/**
 	 *
@@ -154,7 +150,7 @@ public interface XRoadServices {
 	 * @return data about {@link Case}s or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public Case_type0[] getCasesEntries(String serviceProviderID, User user);
+	public Case[] getCasesEntries(String serviceProviderID, User user);
 
 	/**
 	 *
@@ -170,7 +166,7 @@ public interface XRoadServices {
 	 * defined by criteria, or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
+	public CaseStep[] getCaseEntries(String serviceProviderID,
 			String caseIdentifier, User user);
 
 	/**
@@ -187,7 +183,7 @@ public interface XRoadServices {
 	 * defined by criteria, or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public CaseProcessingStep_type0[] getCaseEntries(String serviceProviderID,
+	public CaseStep[] getCaseEntries(String serviceProviderID,
 			String caseIdentifier, String personalID);
 
 	/**
@@ -201,7 +197,7 @@ public interface XRoadServices {
 	 * <code>null</code> on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public LabelPair_type0[] getXFormsLabels(String serviceProviderID,
+	public LabelPair[] getXFormsLabels(String serviceProviderID,
 			String xFormID, String language);
 
 	/**
@@ -214,7 +210,7 @@ public interface XRoadServices {
 	 * <code>null</code> on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public Message_type0[] getMessageEntries(String serviceProviderID,
+	public Message[] getMessageEntries(String serviceProviderID,
 			String personalID);
 
 	/**
@@ -228,7 +224,7 @@ public interface XRoadServices {
 	 * <code>null</code> on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public Message_type0[] getMessageEntries(String serviceProviderID, User user, String caseId);
+	public Message[] getMessageEntries(String serviceProviderID, User user, String caseId);
 
 	/**
 	 *
@@ -465,5 +461,34 @@ public interface XRoadServices {
 	 * @return notifications for {@link User} or <code>null</code> on failure;
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	public Notification_type0[] getNotifications(User user, String serviceProviderId);
+	public Notification[] getNotifications(User user, String serviceProviderId);
+
+	/**
+	 *
+	 * <p>Marks {@link Notification} as read in remote server.</p>
+	 * @param user who's {@link NotificationReceiverEntity}s should be searched, not <code>null</code>;
+	 * @param serviceProviderId
+	 * @return <code>true</code> on sucess, <code>false</code> otherwise;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public boolean doMarkNotificationAsRead(
+			User user,
+			String serviceProviderId,
+			String notificationId,
+			boolean markAsRead);
+
+
+	/**
+	 *
+	 * <p>Marks {@link com.idega.block.process.data.Case} as read on remote system.</p>
+	 * @param user who's {@link com.idega.block.process.data.Case}s should be searche, not <code>null</code>;
+	 * @param serviceProviderId
+	 * @param caseId is {@link com.idega.block.process.data.Case#getPrimaryKey()} in remote system, not <code>null</code>;
+	 * @param markAsRead <code>true</code> if mark as read required,
+	 * <code>false</code> if mark as unread required;
+	 * @return <code>true</code> if marked, <code>false</code> otherwise;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public boolean doMarkCaseAsRead(User user, String serviceProviderId,
+			String caseId, boolean markAsRead);
 }
