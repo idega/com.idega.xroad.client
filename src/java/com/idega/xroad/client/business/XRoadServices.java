@@ -85,9 +85,6 @@ package com.idega.xroad.client.business;
 import java.io.InputStream;
 import java.util.Locale;
 
-import javax.management.Notification;
-
-import org.apache.axis.wsdl.symbolTable.ServiceEntry;
 import org.jbpm.graph.exe.ProcessInstance;
 import org.jbpm.taskmgmt.def.Task;
 import org.jbpm.taskmgmt.exe.TaskInstance;
@@ -96,6 +93,12 @@ import org.w3c.dom.Document;
 import com.idega.block.form.data.XForm;
 import com.idega.notifier.data.NotificationReceiverEntity;
 import com.idega.user.data.User;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseStep;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Notification;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry;
 
 /**
  * <p>Interface for communication with X-Road server</p>

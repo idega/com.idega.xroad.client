@@ -90,14 +90,12 @@ import java.util.logging.Level;
 
 import javax.activation.DataHandler;
 import javax.ejb.FinderException;
-import javax.management.Notification;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.x_rd.ee.municipality.producer.Response_type6;
 
-import org.apache.axis.wsdl.symbolTable.ServiceEntry;
 import org.apache.axis2.AxisFault;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -119,9 +117,14 @@ import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 import com.idega.util.xml.XmlUtil;
+import com.idega.xformsmanager.manager.XFormsManagerFactory;
 import com.idega.xroad.client.XRoadClientConstants;
 import com.idega.xroad.client.business.XRoadServices;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseDetails;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseList;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseStep;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Consumer;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetCaseDetails;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetCaseDetailsE;
@@ -165,10 +168,30 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetXFormLabelsResponse
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.GetXFormLabelsResponseE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Id;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Issue;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LangType;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsRead;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsRead;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadRequest;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadResponse;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkNotificationAsReadResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkResult;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Message;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MessagesList;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Notification;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.NotificationsList;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.PreffiledDocument;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Producer;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Service;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceEntry;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ServiceList;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.UserId;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.XFormLabel;
 import com.idega.xroad.data.XRoadDAO;
 
 /**
@@ -189,6 +212,9 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 
 	@Autowired
 	private XRoadDAO xroadDAO;
+
+	@Autowired
+	private XFormsManagerFactory xformsManagerFactory;
 
 	/*
 	 * (non-Javadoc)
