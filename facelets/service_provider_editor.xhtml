@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<div
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+	<link 
+		rel="stylesheet"
+		type="text/css"
+		href="#{iwResourceResolver['com.idega.core']['style/iw_core.css']}"/>
+	<script 
+		type="text/javascript" 
+		src="http://code.jquery.com/jquery-latest.min.js"/>
+	<script 
+		type="text/javascript"
+		src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"/>
+	<script 
+		type="text/javascript" 
+		src="#{iwResourceResolver['com.idega.core']['iw_core.js']}"/>
+	<script 
+		type="text/javascript"
+		src="#{iwResourceResolver['com.idega.xroad.client']['javascript/serviceProviderEditorHelper.js']}"/>
+	<script type="text/javascript">
+		ServiceProviderEditorHelper.FIELD_IS_REQUIRED = "#{localizedStrings['com.idega.xroad.client']['field_is_required']}";
+		ServiceProviderEditorHelper.SAVING = "#{localizedStrings['com.idega.xroad.client']['saving']}";
+	</script>
+	<h:panelGroup
+		rendered="#{serviceProviderBean.submitted}">
+		<h:outputText
+			styleClass="savedText"
+			value="#{localizedStrings['com.idega.xroad.client']['saved']}"/>
+	</h:panelGroup>
+	<h:form
+		rendered="#{not serviceProviderBean.submitted}"
+		id="serviceProviderForm">
+		<h:panelGrid
+			columns="2"
+			styleClass="editorTable">
+			<h:panelGroup
+				layout="block">
+				<h:outputLabel
+					for="providerId"
+					value="#{localizedStrings['com.idega.xroad.client']['provider_id']}"/>
+			</h:panelGroup>
+			<h:panelGroup
+				layout="block">
+				<h:inputText
+					id="providerId"
+					value="#{serviceProviderBean.providerId}"/>
+			</h:panelGroup>
+			<h:panelGroup
+				layout="block">
+				<h:outputLabel
+					for="providerName"
+					value="#{localizedStrings['com.idega.xroad.client']['name']}"/>
+			</h:panelGroup>
+			<h:panelGroup
+				layout="block">
+				<h:inputText
+					id="providerName"
+					value="#{serviceProviderBean.name}"/>
+			</h:panelGroup>
+			<h:panelGroup
+				layout="block">
+				<h:outputLabel
+					for="url"
+					value="#{localizedStrings['com.idega.xroad.client']['url']}"/>
+			</h:panelGroup>
+			<h:panelGroup
+				layout="block">
+				<h:inputText
+					id="url"
+					value="#{serviceProviderBean.url}"/>
+			</h:panelGroup>
+			<h:panelGroup>
+				<h:commandButton
+					id="saveButton"
+					value="#{localizedStrings['com.idega.xroad.client']['save']}"
+					action="#{serviceProviderBean.submit}"/>
+			</h:panelGroup>
+			<h:panelGroup
+				layout="block">
+				<h:inputHidden
+					value="#{serviceProviderBean.id}"/>
+			</h:panelGroup>
+		</h:panelGrid>
+	</h:form>
+</div>
