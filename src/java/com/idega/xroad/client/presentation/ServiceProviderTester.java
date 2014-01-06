@@ -1,5 +1,5 @@
 /**
- * @(#)ServiceProviderViewerBean.java    1.0.0 3:44:11 PM
+ * @(#)ServiceProvidersViewer.java    1.0.0 2:37:24 PM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,97 +80,42 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client.presentation.beans;
+package com.idega.xroad.client.presentation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.idega.builder.business.BuilderLogic;
+import com.idega.facelets.ui.FaceletComponent;
+import com.idega.presentation.IWBaseComponent;
 import com.idega.presentation.IWContext;
-import com.idega.util.CoreConstants;
-import com.idega.util.CoreUtil;
-import com.idega.util.ListUtil;
-import com.idega.util.StringUtil;
-import com.idega.util.expression.ELUtil;
-import com.idega.xroad.client.data.ServiceProviderEntity;
-import com.idega.xroad.client.data.dao.ServiceProviderEntityDAO;
-import com.idega.xroad.client.presentation.ServiceProviderEditor;
-import com.idega.xroad.client.presentation.ServiceProvidersViewer;
+import com.idega.xroad.client.XRoadClientConstants;
 
 /**
- * <p>JSF managed bean for {@link ServiceProvidersViewer} component</p>
+ * <p>JSF component for viewing {@link com.idega.xroad.client.data.ServiceProviderEntity}s</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
  * @version 1.0.0 Nov 27, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public class ServiceProvidersViewerBean {
+public class ServiceProviderTester extends IWBaseComponent {
+	public static final String FACELET_FILENAME = "service_provider_tester.xhtml";
 
-	public List<ServiceProviderBean> getServiceProviders() {
-		List<ServiceProviderEntity> serviceProviders = getServiceProviderEntityDAO().find();
-		if (ListUtil.isEmpty(serviceProviders)) {
-			return Collections.emptyList();
+	@Override
+	protected void initializeComponent(FacesContext context) {
+		super.initializeComponent(context);
+
+		IWContext iwc = IWContext.getIWContext(context);
+		UIComponent facelet = getIWMainApplication(iwc)
+				.createComponent(FaceletComponent.COMPONENT_TYPE);		
+		if (facelet instanceof FaceletComponent) {
+			((FaceletComponent) facelet).setFaceletURI(
+					getBundle(
+							context, 
+							XRoadClientConstants.BUNDLE_IDENTIFIER)
+									.getFaceletURI(FACELET_FILENAME));
 		}
 
-		ArrayList<ServiceProviderBean> beans = new ArrayList<ServiceProviderBean>(serviceProviders.size());
-		for (ServiceProviderEntity provider : serviceProviders) {
-			beans.add(new ServiceProviderBean(provider));
-		}
-
-		return beans;
-	}
-
-	public List<ServiceProviderTestBean> getServiceProvidersTestBeans() {
-		List<ServiceProviderEntity> serviceProviders = getServiceProviderEntityDAO().find();
-		if (ListUtil.isEmpty(serviceProviders)) {
-			return Collections.emptyList();
-		}
-
-		ArrayList<ServiceProviderTestBean> beans = new ArrayList<ServiceProviderTestBean>(serviceProviders.size());
-		for (ServiceProviderEntity provider : serviceProviders) {
-			beans.add(new ServiceProviderTestBean(provider));
-		}
-
-		return beans;
-	}
-
-	public String getEditorLink() {
-		return BuilderLogic.getInstance().getUriToObject(ServiceProviderEditor.class);
-	}
-
-	public String getHomepageLink() {
-		BuilderLogic bl = BuilderLogic.getInstance();
-		IWContext iwc = CoreUtil.getIWContext();
-		if (iwc == null || !iwc.isLoggedOn()) {
-			return null;
-		}
-
-		String uri = CoreConstants.PAGES_URI_PREFIX;
-		com.idega.core.builder.data.ICPage homePage = bl.getUsersHomePage(iwc.getCurrentUser());
-		if (homePage != null)
-			uri = uri + homePage.getDefaultPageURI();
-
-		return uri;
-	}
-
-	public void remove(String id) {
-		if (!StringUtil.isEmpty(id)) {
-			getServiceProviderEntityDAO().remove(Long.valueOf(id));
-		}
-	}
-
-	@Autowired
-	private ServiceProviderEntityDAO serviceProviderEntityDAO = null;
-
-	protected ServiceProviderEntityDAO getServiceProviderEntityDAO() {
-		if (this.serviceProviderEntityDAO == null) {
-			ELUtil.getInstance().autowire(this);
-		}
-
-		return this.serviceProviderEntityDAO;
+		add(facelet);
 	}
 }

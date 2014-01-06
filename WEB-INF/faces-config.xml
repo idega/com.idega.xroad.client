@@ -37,4 +37,21 @@
 		<managed-bean-class>com.idega.xroad.client.presentation.beans.ServiceProvidersViewerBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
+
+	<component>
+		<component-class>com.idega.xroad.client.presentation.ServiceProviderTester</component-class>
+		<component-type>Visual test for XRoad services</component-type>
+		<component-extension>
+			<idegaweb-info>
+        		<builder-visible>true</builder-visible>
+        		<object-type>jsf.uicomponent</object-type>
+      		</idegaweb-info>
+		</component-extension>
+	</component>
+
+	<managed-bean>
+		<managed-bean-name>serviceProviderTestBean</managed-bean-name>
+		<managed-bean-class>com.idega.xroad.client.presentation.beans.ServiceProviderTestBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
 </faces-config>
