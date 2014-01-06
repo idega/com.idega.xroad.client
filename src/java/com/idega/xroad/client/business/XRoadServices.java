@@ -494,4 +494,14 @@ public interface XRoadServices {
 	 */
 	public boolean doMarkCaseAsRead(User user, String serviceProviderId,
 			String caseId, boolean markAsRead);
+
+	/**
+	 * 
+	 * @param user to get methods for, not <code>null</code>;
+	 * @param serviceProviderId to get methods for, not <code>null</code>;
+	 * @return names of accessible methods in service or <code>null</code> 
+	 * on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	String[] getMethodsList(User user, String serviceProviderId);
 }
