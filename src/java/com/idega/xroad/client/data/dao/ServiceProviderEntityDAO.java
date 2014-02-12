@@ -1,5 +1,5 @@
 /**
- * @(#)XRoadClientConstants.java    1.0.0 12:17:07 PM
+ * @(#)ServiceProvidedEntityDAO.java    1.0.0 12:09:58 PM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,35 +80,79 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client;
+package com.idega.xroad.client.data.dao;
 
-import com.idega.util.CoreConstants;
+import java.util.Collections;
+import java.util.List;
+
+import com.idega.xroad.client.data.ServiceProviderEntity;
 
 /**
+ * <p>Data access object for {@link ServiceProviderEntity}</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
- * @version 1.0.0 May 7, 2013
+ * @version 1.0.0 Nov 27, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface XRoadClientConstants {
+public interface ServiceProviderEntityDAO {
 
-	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
-	
-	public static final String SERVICE_PRODUCER = "db01";
-	public static final String SERVICE_CONSUMER = "ehub"; 
-	
-	public static final String 
-		SERVICE_GET_XFORMS_LABELS = SERVICE_PRODUCER + CoreConstants.DOT + "GetXFormLabels",
-		SERVICE_GET_SERVICE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetServiceList",
-		SERVICE_GET_CASE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseList",
-		SERVICE_GET_CASE_DETAILS = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseDetails",
-		SERVICE_GET_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetDocument",
-		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
-		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
-		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
-		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications",
-		SERVICE_MARK_NOTIFICATION_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkNotificationAsRead",
-		SERVICE_MARK_CASE_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkCaseAsRead",
-		SERVICE_LIST_METHODS = SERVICE_PRODUCER + CoreConstants.DOT + "listMethods";
+	static final String BEAN_NAME = "serviceProviderEntityDAO";
+
+	/**
+	 * 
+	 * <p>Creates or updates {@link ServiceProviderEntity} to data source.</p>
+	 * @param entity to create/update, not <code>null</code>;
+	 * @return updated/created entity or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	ServiceProviderEntity update(ServiceProviderEntity entity);
+
+	/**
+	 * 
+	 * <p>Creates or updates {@link ServiceProviderEntity} to data source.</p>
+	 * @param id is {@link ServiceProviderEntity#getId()}, existing one will
+	 * be updated, when not <code>null</code>;
+	 * @param providerId is id for service provider in X-Road system, 
+	 * skipped if <code>null</code>;
+	 * @param name for connection, skipped if <code>null</code>;
+	 * @param url for {@link ServiceProviderEntity}, if creating new one, then
+	 * not <code>null</code>;
+	 * @return updated/created entity or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	ServiceProviderEntity update(Long id, Long providerId, String name, String url);
+
+	/**
+	 * 
+	 * @param id is {@link ServiceProviderEntity#getId()} to search by, 
+	 * not <code>null</code>;
+	 * @return entity or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	ServiceProviderEntity find(Long id);
+
+	/**
+	 * 
+	 * @param url {@link ServiceProviderEntity#getUrl()}, not <code>null</code>;
+	 * @return entity or <code>null</code> on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	ServiceProviderEntity find(String url);
+
+	/**
+	 * 
+	 * @return all entities or {@link Collections#emptyList()} on failure;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	List<ServiceProviderEntity> find();
+
+	/**
+	 * 
+	 * <p>Removes entity by id.</p>
+	 * @param courseProviderId is {@link ServiceProviderEntity#getId()}, 
+	 * not <code>null</code>;
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	void remove(Long id);
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config
+	xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
+	<component>
+		<component-class>com.idega.xroad.client.presentation.ServiceProviderEditor</component-class>
+		<component-type>Service provider editor</component-type>
+		<component-extension>
+			<idegaweb-info>
+        		<builder-visible>true</builder-visible>
+        		<object-type>jsf.uicomponent</object-type>
+      		</idegaweb-info>
+		</component-extension>
+	</component>
+
+	<managed-bean>
+		<managed-bean-name>serviceProviderBean</managed-bean-name>
+		<managed-bean-class>com.idega.xroad.client.presentation.beans.ServiceProviderBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<component>
+		<component-class>com.idega.xroad.client.presentation.ServiceProvidersViewer</component-class>
+		<component-type>Service providers viewer</component-type>
+		<component-extension>
+			<idegaweb-info>
+        		<builder-visible>true</builder-visible>
+        		<object-type>jsf.uicomponent</object-type>
+      		</idegaweb-info>
+		</component-extension>
+	</component>
+
+	<managed-bean>
+		<managed-bean-name>serviceProviderViewerBean</managed-bean-name>
+		<managed-bean-class>com.idega.xroad.client.presentation.beans.ServiceProvidersViewerBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<component>
+		<component-class>com.idega.xroad.client.presentation.ServiceProviderTester</component-class>
+		<component-type>Visual test for XRoad services</component-type>
+		<component-extension>
+			<idegaweb-info>
+        		<builder-visible>true</builder-visible>
+        		<object-type>jsf.uicomponent</object-type>
+      		</idegaweb-info>
+		</component-extension>
+	</component>
+
+	<managed-bean>
+		<managed-bean-name>serviceProviderTestBean</managed-bean-name>
+		<managed-bean-class>com.idega.xroad.client.presentation.beans.ServiceProviderTestBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+</faces-config>

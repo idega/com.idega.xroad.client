@@ -1,5 +1,5 @@
 /**
- * @(#)XRoadClientConstants.java    1.0.0 12:17:07 PM
+ * @(#)XRoadClientViewManager.java    1.0.0 11:29:12 AM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,35 +80,29 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client;
+package com.idega.xroad.client.presentation;
 
-import com.idega.util.CoreConstants;
+import com.idega.core.view.DefaultViewNode;
+import com.idega.core.view.ViewNode;
+import com.idega.idegaweb.IWBundle;
+import com.idega.xroad.view.XRoadViewManager;
 
 /**
+ * <p>View in workspace for {@link ServiceProvidersViewer}</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
- * @version 1.0.0 May 7, 2013
+ * @version 1.0.0 Nov 28, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface XRoadClientConstants {
+public class XRoadClientViewManager {
 
-	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
-	
-	public static final String SERVICE_PRODUCER = "db01";
-	public static final String SERVICE_CONSUMER = "ehub"; 
-	
-	public static final String 
-		SERVICE_GET_XFORMS_LABELS = SERVICE_PRODUCER + CoreConstants.DOT + "GetXFormLabels",
-		SERVICE_GET_SERVICE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetServiceList",
-		SERVICE_GET_CASE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseList",
-		SERVICE_GET_CASE_DETAILS = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseDetails",
-		SERVICE_GET_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetDocument",
-		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
-		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
-		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
-		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications",
-		SERVICE_MARK_NOTIFICATION_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkNotificationAsRead",
-		SERVICE_MARK_CASE_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkCaseAsRead",
-		SERVICE_LIST_METHODS = SERVICE_PRODUCER + CoreConstants.DOT + "listMethods";
+	public static void initializeStandardNodes(IWBundle bundle){
+		ViewNode contentNode = XRoadViewManager.getInstance(bundle.getApplication()).getXRoadNode();
+		if (contentNode != null) {
+			DefaultViewNode loginNode = new DefaultViewNode("providers", contentNode);
+			loginNode.setFaceletUri(bundle.getFaceletURI(ServiceProvidersViewer.FACELET_FILENAME));
+			loginNode.setName("#{localizedStrings['com.idega.xroad.client']['service_providers_list']}");
+		}
+	}
 }

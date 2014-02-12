@@ -1,5 +1,5 @@
 /**
- * @(#)XRoadClientConstants.java    1.0.0 12:17:07 PM
+ * @(#)ServiceProviderBean.java    1.0.0 3:00:51 PM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,35 +80,162 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client;
+package com.idega.xroad.client.presentation.beans;
 
-import com.idega.util.CoreConstants;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.idega.builder.bean.AdvancedProperty;
+import com.idega.builder.business.BuilderLogic;
+import com.idega.util.CoreUtil;
+import com.idega.util.StringUtil;
+import com.idega.util.expression.ELUtil;
+import com.idega.xroad.client.data.ServiceProviderEntity;
+import com.idega.xroad.client.data.dao.ServiceProviderEntityDAO;
+import com.idega.xroad.client.presentation.ServiceProviderEditor;
+import com.idega.xroad.client.presentation.ServiceProvidersViewer;
 
 /**
+ * <p>JSF managed bean for {@link ServiceProvidersViewer} 
+ * JSF component</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
- * @version 1.0.0 May 7, 2013
+ * @version 1.0.0 Nov 27, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface XRoadClientConstants {
+public class ServiceProviderBean {
 
-	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
-	
-	public static final String SERVICE_PRODUCER = "db01";
-	public static final String SERVICE_CONSUMER = "ehub"; 
-	
-	public static final String 
-		SERVICE_GET_XFORMS_LABELS = SERVICE_PRODUCER + CoreConstants.DOT + "GetXFormLabels",
-		SERVICE_GET_SERVICE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetServiceList",
-		SERVICE_GET_CASE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseList",
-		SERVICE_GET_CASE_DETAILS = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseDetails",
-		SERVICE_GET_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetDocument",
-		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
-		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
-		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
-		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications",
-		SERVICE_MARK_NOTIFICATION_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkNotificationAsRead",
-		SERVICE_MARK_CASE_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkCaseAsRead",
-		SERVICE_LIST_METHODS = SERVICE_PRODUCER + CoreConstants.DOT + "listMethods";
+	public static final String SERVICE_PROVIDER_ID = "service_provider_id";
+
+	public static final String SUBMITTED = "submitted";
+
+	private Long id = null;
+
+	private String name = null;
+
+	private String url = null;
+
+	private Long providerId = null;
+
+	private ServiceProviderEntity serviceProviderEntity = null;
+
+	public ServiceProviderBean() {}
+
+	public ServiceProviderBean(ServiceProviderEntity serviceProviderEntity) {
+		this.serviceProviderEntity = serviceProviderEntity;
+	}
+
+	public ServiceProviderBean(Long id, String name, String url) {
+		this.id = id;
+		this.name = name;
+		this.url = url;
+	}
+
+	public ServiceProviderEntity getServiceProviderEntity() {
+		if (this.serviceProviderEntity == null) {
+			String serviceProviderId = CoreUtil.getIWContext()
+					.getParameter(SERVICE_PROVIDER_ID);
+			if (!StringUtil.isEmpty(serviceProviderId)) {
+				this.serviceProviderEntity = getServiceProviderEntityDAO().find(
+						Long.valueOf(serviceProviderId)
+						);
+			}
+		}
+		
+		return this.serviceProviderEntity;
+	}
+
+	public Long getId() {
+		if (getServiceProviderEntity() == null) {
+			return id;
+		}
+
+		return getServiceProviderEntity().getId();
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getProviderId() {
+		if (getServiceProviderEntity() == null) {
+			return providerId;
+		}
+
+		return getServiceProviderEntity().getProviderId();
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
+	}
+
+	public String getName() {
+		if (getServiceProviderEntity() == null) {
+			return name;
+		}
+
+		return getServiceProviderEntity().getName();
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUrl() {
+		if (getServiceProviderEntity() == null) {
+			return url;
+		}
+
+		return getServiceProviderEntity().getUrl();
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public boolean isSubmitted() {
+		String submitted = CoreUtil.getIWContext().getParameter(SUBMITTED);
+		if (Boolean.TRUE.toString().equals(submitted)) {
+			return Boolean.TRUE;
+		}
+
+		return Boolean.FALSE;
+	}
+
+	public String getEditorLink() {
+		if (getServiceProviderEntity() == null) {
+			return null;
+		}
+		
+		List<AdvancedProperty> parameters = new ArrayList<AdvancedProperty>();
+		parameters.add(new AdvancedProperty(
+				SERVICE_PROVIDER_ID, 
+				getServiceProviderEntity().getId()));
+
+		return BuilderLogic.getInstance().getUriToObject(
+				ServiceProviderEditor.class, 
+				parameters
+				);
+	}
+
+	public void submit() {
+		// Update
+		if(getServiceProviderEntityDAO().update(this.id, this.providerId, this.name, this.url) != null) {
+			CoreUtil.getIWContext().setMultipartParameter(SUBMITTED, Boolean.TRUE.toString());	
+		}
+	}
+
+	@Autowired
+	private ServiceProviderEntityDAO serviceProviderEntityDAO = null;
+
+	protected ServiceProviderEntityDAO getServiceProviderEntityDAO() {
+		if (this.serviceProviderEntityDAO == null) {
+			ELUtil.getInstance().autowire(this);
+		}
+
+		return this.serviceProviderEntityDAO;
+	}
 }

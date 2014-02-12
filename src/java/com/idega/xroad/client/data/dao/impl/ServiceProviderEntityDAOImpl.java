@@ -1,5 +1,5 @@
 /**
- * @(#)XRoadClientConstants.java    1.0.0 12:17:07 PM
+ * @(#)ServiceProviderEntityDAOImpl.java    1.0.0 12:23:08 PM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,35 +80,151 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client;
+package com.idega.xroad.client.data.dao.impl;
 
-import com.idega.util.CoreConstants;
+import java.util.List;
+import java.util.logging.Level;
+
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.idega.core.persistence.Param;
+import com.idega.core.persistence.impl.GenericDaoImpl;
+import com.idega.util.StringUtil;
+import com.idega.xroad.client.data.ServiceProviderEntity;
+import com.idega.xroad.client.data.dao.ServiceProviderEntityDAO;
 
 /**
+ * <p>implementation for {@link ServiceProviderEntityDAO}</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
- * @version 1.0.0 May 7, 2013
+ * @version 1.0.0 Nov 27, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface XRoadClientConstants {
+@Repository(ServiceProviderEntityDAO.BEAN_NAME)
+@Transactional(readOnly = false)
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class ServiceProviderEntityDAOImpl extends GenericDaoImpl implements ServiceProviderEntityDAO {
 
-	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
-	
-	public static final String SERVICE_PRODUCER = "db01";
-	public static final String SERVICE_CONSUMER = "ehub"; 
-	
-	public static final String 
-		SERVICE_GET_XFORMS_LABELS = SERVICE_PRODUCER + CoreConstants.DOT + "GetXFormLabels",
-		SERVICE_GET_SERVICE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetServiceList",
-		SERVICE_GET_CASE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseList",
-		SERVICE_GET_CASE_DETAILS = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseDetails",
-		SERVICE_GET_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetDocument",
-		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
-		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
-		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
-		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications",
-		SERVICE_MARK_NOTIFICATION_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkNotificationAsRead",
-		SERVICE_MARK_CASE_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkCaseAsRead",
-		SERVICE_LIST_METHODS = SERVICE_PRODUCER + CoreConstants.DOT + "listMethods";
+	/* (non-Javadoc)
+	 * @see com.idega.xroad.client.data.dao.ServiceProviderEntityDAO#update(com.idega.xroad.client.data.ServiceProviderEntity)
+	 */
+	@Override
+	public ServiceProviderEntity update(ServiceProviderEntity entity) {
+		if (entity == null) {
+			return null;
+		}
+
+		try {
+			if (entity.getId() == null) {
+				persist(entity);
+				getLogger().info(entity.getClass().getName() + 
+						" by id: '" + entity.getId() + "' created!");
+			} else {
+				merge(entity);
+				getLogger().info(entity.getClass() + 
+						" by id: '" + entity.getId() + "' updated!");
+			}
+
+			return entity;
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING,
+					"Failed to update " + entity.getClass() + 
+					" by id: '" + entity.getId() + "'", e);
+		}
+
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.idega.xroad.client.data.dao.ServiceProviderEntityDAO#update(java.lang.Long, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ServiceProviderEntity update(Long id, Long providerId, String name, String url) {
+		ServiceProviderEntity entity = null;
+		if (id != null) {
+			entity = find(id);
+		} else if (!StringUtil.isEmpty(url)) {
+			entity = find(url);
+		}
+
+		if (entity == null) {
+			if (!StringUtil.isEmpty(url)) {
+				entity = new ServiceProviderEntity();
+			} else {
+				return null;
+			}
+		}
+
+		if (providerId != null) {
+			entity.setProviderId(providerId);
+		}
+
+		if (!StringUtil.isEmpty(name)) {
+			entity.setName(name);
+		}
+
+		if (!StringUtil.isEmpty(url)) {
+			entity.setUrl(url);
+		}
+
+		return update(entity);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.idega.xroad.client.data.dao.ServiceProviderEntityDAO#find(java.lang.Long)
+	 */
+	@Override
+	public ServiceProviderEntity find(Long id) {
+		if (id == null) {
+			return null;
+		}
+
+		return getSingleResult(
+				ServiceProviderEntity.QUERY_FIND_BY_ID, 
+				ServiceProviderEntity.class, 
+				new Param(ServiceProviderEntity.idProp, id));
+	}
+
+	/* (non-Javadoc)
+	 * @see com.idega.xroad.client.data.dao.ServiceProviderEntityDAO#find(java.lang.String)
+	 */
+	@Override
+	public ServiceProviderEntity find(String url) {
+		if (StringUtil.isEmpty(url)) {
+			return null;
+		}
+
+		return getSingleResult(
+				ServiceProviderEntity.QUERY_FIND_BY_URL, 
+				ServiceProviderEntity.class, 
+				new Param(ServiceProviderEntity.urlProp, url));
+	}
+
+	/* (non-Javadoc)
+	 * @see com.idega.xroad.client.data.dao.ServiceProviderEntityDAO#find()
+	 */
+	@Override
+	public List<ServiceProviderEntity> find() {
+		return getResultList(
+				ServiceProviderEntity.QUERY_FIND_ALL, 
+				ServiceProviderEntity.class);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.data.dao.ServiceProviderEntityDAO#remove(java.lang.Long)
+	 */
+	@Override
+	public void remove(Long id) {
+		if (id != null) {
+			remove(find(id));
+			getLogger().info(
+					ServiceProviderEntity.class.getName() + 
+					" by id: '" + id + "' removed!");
+		}
+	}
 }

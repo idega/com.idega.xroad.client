@@ -1,5 +1,5 @@
 /**
- * @(#)XRoadClientConstants.java    1.0.0 12:17:07 PM
+ * @(#)ServiceProviderViewerBean.java    1.0.0 3:44:11 PM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,35 +80,97 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client;
+package com.idega.xroad.client.presentation.beans;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.idega.builder.business.BuilderLogic;
+import com.idega.presentation.IWContext;
 import com.idega.util.CoreConstants;
+import com.idega.util.CoreUtil;
+import com.idega.util.ListUtil;
+import com.idega.util.StringUtil;
+import com.idega.util.expression.ELUtil;
+import com.idega.xroad.client.data.ServiceProviderEntity;
+import com.idega.xroad.client.data.dao.ServiceProviderEntityDAO;
+import com.idega.xroad.client.presentation.ServiceProviderEditor;
+import com.idega.xroad.client.presentation.ServiceProvidersViewer;
 
 /**
+ * <p>JSF managed bean for {@link ServiceProvidersViewer} component</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
- * @version 1.0.0 May 7, 2013
+ * @version 1.0.0 Nov 27, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface XRoadClientConstants {
+public class ServiceProvidersViewerBean {
 
-	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
-	
-	public static final String SERVICE_PRODUCER = "db01";
-	public static final String SERVICE_CONSUMER = "ehub"; 
-	
-	public static final String 
-		SERVICE_GET_XFORMS_LABELS = SERVICE_PRODUCER + CoreConstants.DOT + "GetXFormLabels",
-		SERVICE_GET_SERVICE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetServiceList",
-		SERVICE_GET_CASE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseList",
-		SERVICE_GET_CASE_DETAILS = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseDetails",
-		SERVICE_GET_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetDocument",
-		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
-		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
-		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
-		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications",
-		SERVICE_MARK_NOTIFICATION_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkNotificationAsRead",
-		SERVICE_MARK_CASE_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkCaseAsRead",
-		SERVICE_LIST_METHODS = SERVICE_PRODUCER + CoreConstants.DOT + "listMethods";
+	public List<ServiceProviderBean> getServiceProviders() {
+		List<ServiceProviderEntity> serviceProviders = getServiceProviderEntityDAO().find();
+		if (ListUtil.isEmpty(serviceProviders)) {
+			return Collections.emptyList();
+		}
+
+		ArrayList<ServiceProviderBean> beans = new ArrayList<ServiceProviderBean>(serviceProviders.size());
+		for (ServiceProviderEntity provider : serviceProviders) {
+			beans.add(new ServiceProviderBean(provider));
+		}
+
+		return beans;
+	}
+
+	public List<ServiceProviderTestBean> getServiceProvidersTestBeans() {
+		List<ServiceProviderEntity> serviceProviders = getServiceProviderEntityDAO().find();
+		if (ListUtil.isEmpty(serviceProviders)) {
+			return Collections.emptyList();
+		}
+
+		ArrayList<ServiceProviderTestBean> beans = new ArrayList<ServiceProviderTestBean>(serviceProviders.size());
+		for (ServiceProviderEntity provider : serviceProviders) {
+			beans.add(new ServiceProviderTestBean(provider));
+		}
+
+		return beans;
+	}
+
+	public String getEditorLink() {
+		return BuilderLogic.getInstance().getUriToObject(ServiceProviderEditor.class);
+	}
+
+	public String getHomepageLink() {
+		BuilderLogic bl = BuilderLogic.getInstance();
+		IWContext iwc = CoreUtil.getIWContext();
+		if (iwc == null || !iwc.isLoggedOn()) {
+			return null;
+		}
+
+		String uri = CoreConstants.PAGES_URI_PREFIX;
+		com.idega.core.builder.data.ICPage homePage = bl.getUsersHomePage(iwc.getCurrentUser());
+		if (homePage != null)
+			uri = uri + homePage.getDefaultPageURI();
+
+		return uri;
+	}
+
+	public void remove(String id) {
+		if (!StringUtil.isEmpty(id)) {
+			getServiceProviderEntityDAO().remove(Long.valueOf(id));
+		}
+	}
+
+	@Autowired
+	private ServiceProviderEntityDAO serviceProviderEntityDAO = null;
+
+	protected ServiceProviderEntityDAO getServiceProviderEntityDAO() {
+		if (this.serviceProviderEntityDAO == null) {
+			ELUtil.getInstance().autowire(this);
+		}
+
+		return this.serviceProviderEntityDAO;
+	}
 }

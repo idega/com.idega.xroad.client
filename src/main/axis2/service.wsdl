@@ -1,1786 +1,2526 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://ehubservice.ee.x-rd.net/producer/"
-  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ehubservice.ee.x-rd.net/producer/"
-  xmlns:xrd="http://x-rd.net/xsd/xroad.xsd" targetNamespace="http://ehubservice.ee.x-rd.net/producer/">
-  <wsdl:types>
-    <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ref="http://ws-i.org/profiles/basic/1.1/xsd"
-      xmlns:tns="http://ehubservice.ee.x-rd.net/producer/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      targetNamespace="http://ehubservice.ee.x-rd.net/producer/">
-      <import namespace="http://x-rd.net/xsd/xroad.xsd" schemaLocation="http://x-rd.net/xsd/xroad.xsd" />
-
-      <!-- <import namespace="http://ws-i.org/profiles/basic/1.1/xsd" -->
-      <!-- schemaLocation="http://ws-i.org/profiles/basic/1.1/swaref.xsd" /> -->
-      <!-- Request-response declarations - start -->
-
-      <element name="GetXFormLabels" type="tns:GetXFormLabels"></element>
-      <element name="GetXFormLabelsResponse" type="tns:GetXFormLabelsResponse"></element>
-
-      <element name="GetServiceList" type="tns:GetServiceList"></element>
-      <element name="GetServiceListResponse" type="tns:GetServiceListResponse"></element>
-
-      <element name="GetCaseList" type="tns:GetCaseList"></element>
-      <element name="GetCaseListResponse" type="tns:GetCaseListResponse"></element>
-
-      <element name="GetCaseDetails" type="tns:GetCaseDetails"></element>
-      <element name="GetCaseDetailsResponse" type="tns:GetCaseDetailsResponse"></element>
-
-      <element name="GetDocument" type="tns:GetDocument"></element>
-      <element name="GetDocumentResponse" type="tns:GetDocumentResponse"></element>
-
-      <element name="GetMessagesList" type="tns:GetMessagesList"></element>
-      <element name="GetMessagesListResponse" type="tns:GetMessagesListResponse"></element>
-
-      <element name="GetPrefilledDocument" type="tns:GetPrefilledDocument"></element>
-      <element name="GetPrefilledDocumentResponse" type="tns:GetPrefilledDocumentResponse"></element>
-
-      <element name="SubmitDocument" type="tns:SubmitDocument"></element>
-      <element name="SubmitDocumentResponse" type="tns:SubmitDocumentResponse"></element>
-
-      <element name="GetNotifications" type="tns:GetNotifications"></element>
-      <element name="GetNotificationsResponse" type="tns:GetNotificationsResponse"></element>
-
-      <element name="MarkCaseAsRead" type="tns:MarkCaseAsRead"></element>
-      <element name="MarkCaseAsReadResponse" type="tns:MarkCaseAsReadResponse"></element>
-
-      <element name="MarkNotificationAsRead" type="tns:MarkNotificationAsRead"></element>
-      <element name="MarkNotificationAsReadResponse" type="tns:MarkNotificationAsReadResponse"></element>
-
-      <!-- Request-response declarations - end -->
-
-      <!-- Request-response types - start -->
-
-      <complexType name="GetXFormLabelsRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"/>
-          <element name="xFormId" type="string"/>
-          <element name="lang" type="tns:langType">
-            <annotation>
-              <appinfo>Language in ISO format</appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetXFormLabels">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetXFormLabelsRequest"/>
-        </sequence>
-      </complexType>
-
-      <complexType 
-        name="GetXFormLabelsResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element 
-            name="request" 
-            type="tns:GetXFormLabelsRequest" />
-          <element 
-            name="response"
-            type="tns:XFormLabel"/>
-        </sequence>
-      </complexType>
-
-	  <complexType
-        name="XFormLabel">
-        <sequence>
-          <element 
-            name="labelPairs"
-            maxOccurs="unbounded" 
-            minOccurs="0"
-            type="tns:LabelPair">
-          </element>
-        </sequence>
-      </complexType>
-
-	  <complexType
-	    name="LabelPair">
-        <sequence>
-          <element 
-            name="key" 
-            type="string">
-            <annotation>
-              <appinfo>Keyword for a label</appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="label" 
-            type="string">
-            <annotation>
-              <appinfo>Translation for a given language and form</appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetServiceListRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"></element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetServiceList">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetServiceListRequest"></element>
-        </sequence>
-      </complexType>
-
-      <complexType 
-        name="GetServiceListResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element 
-            name="request" 
-            type="tns:GetServiceListRequest"/>
-          <element 
-            name="response" 
-            type="tns:ServiceList"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="ServiceList">
-        <sequence>
-          <element 
-            name="serviceEntries" 
-            maxOccurs="unbounded" 
-            minOccurs="0"
-            type="tns:ServiceEntry">
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="ServiceEntry">
-        <sequence>
-          <element name="id" type="string">
-            <annotation>
-              <appinfo>Used by the system to refer the service</appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="nameLabel" 
-            type="tns:labelType"/>
-          <element 
-            name="icon" 
-            type="base64Binary" 
-            maxOccurs="1" 
-            minOccurs="0"/>
-          <element
-          	name="iconURI"
-          	type="string"/>
-          <element
-          	name="serviceURI"
-          	type="string"/>
-          <element
-            name="subscribers"
-            type="tns:User"
-            maxOccurs="unbounded"
-            minOccurs="0"/>
-          <element
-            name="requiresSecureSession"
-            type="boolean"/>
-          <element
-            name="companyId"
-            tyep="string"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetCaseListRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"/>
-          <element name="citizenId" type="string">
-            <annotation>
-              <appinfo>Country specific identification number (i.e. personal
-                code in Estonia)
-              </appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetCaseList">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetCaseListRequest"></element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetCaseListResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetCaseListRequest"/>
-          <element name="response" type="tns:CaseList"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-      	name="CaseList">
-        <sequence>
-          <element 
-            name="cases" 
-            maxOccurs="unbounded" 
-            minOccurs="0"
-            type="tns:Case"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-      	name="Case">
-        <sequence>
-          <element name="id" type="string">
-            <annotation>
-              <appinfo>Used by the system to refer to the case</appinfo>
-            </annotation>
-          </element>
-          <element 
-          	name="typeLabel" 
-          	type="tns:labelType"
-          	nillable="true">
-            <annotation>
-              <appinfo>Identifies the type of the case (e.g. "Application
-                for parking
-                permit")
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-          	name="nameLabel" 
-          	type="tns:labelType"
-          	nillable="true">
-            <annotation>
-              <appinfo>Identifies the particular case</appinfo>
-            </annotation>
-          </element>
-          <element 
-          	name="statusLabel" 
-          	type="tns:labelType"
-          	nillable="true">
-            <annotation>
-              <appinfo>Identifies the processing step of the case (e.g.
-                "completed", "in
-                progress", "waiting for clarifications")
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-          	name="lastOperationDate" 
-          	type="date" 
-          	nillable="true">
-            <annotation>
-              <appinfo>Indicates when the case was last time modified in
-                the
-                service
-                provider
-                system
-              </appinfo>
-            </annotation>
-          </element>
-          <element
-          	name="nextOperationTime" 
-          	type="dateTime" 
-          	nillable="true">
-            <annotation>
-              <appinfo>Case next operation time indicates when is the last
-                possible time
-                when
-                the case will be modified in the system
-                again
-              </appinfo>
-            </annotation>
-          </element>
-          <element name="orgLabel" type="tns:labelType">
-            <annotation>
-              <appinfo>Identifies the organization that is currently
-                responsible for
-                handling
-                the case
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-          	name="official" 
-          	type="string" 
-          	nillable="true">
-            <annotation>
-              <appinfo>Identifies person who is responsible for handling
-                of
-                the case at
-                the
-                moment
-              </appinfo>
-            </annotation>
-          </element>
-          <element name="serviceId" type="string"></element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetCaseDetailsRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"/>
-          <element name="caseId" type="string"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetCaseDetails">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetCaseDetailsRequest"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetCaseDetailsResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetCaseDetailsRequest"/>
-          <element name="response" type="tns:CaseDetails"/>
-        </sequence>
-      </complexType>
-
-	  <complexType
-	    name="CaseDetails">
-        <sequence>
-          <element 
-            name="caseProcessingStep" 
-            maxOccurs="unbounded" 
-            minOccurs="0"
-            type="tns:CaseStep"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-      	name="CaseStep">
-        <sequence>
-          <element name="stepId" type="string">
-            <annotation>
-              <appinfo>Used by system to identify case processing step
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="statusLabel" 
-            type="tns:labelType"
-            nillable="true">
-            <annotation>
-              <appinfo>Contains the status of the case for this step
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="operationDate" 
-            type="date"
-            nillable="true">
-            <annotation>
-              <appinfo>Indicates when was the operation performed
-              </appinfo>
-            </annotation>
-          </element>
-          <element name="orgLabel" type="tns:labelType">
-            <annotation>
-              <appinfo>Indicates which organization performed the step
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="official" 
-            type="string"
-            nillable="true">
-            <annotation>
-              <appinfo>Indicates which person performed the step</appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="documentId" 
-            type="string"
-            nillable="true"
-            maxOccurs="unbounded">
-            <annotation>
-              <appinfo>Identifies additional document that is associated
-                with the
-                processing
-                step
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="submitted" 
-            type="boolean" 
-            nillable="true">
-            <annotation>
-              <appinfo>Identifies is step task is submitted or not</appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="stepName" 
-            type="string"
-            nillable="true"/>
-          <element 
-            name="stepUrl" 
-            type="string"
-            nillable="true"/>
-          <element
-            name="iconURI"
-            type="string"/>
-          <element
-            name="sender"
-            type="tns:User"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetDocumentRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"/>
-          <element name="documentId" type="string"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetDocument">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetDocumentRequest"/>
-        </sequence>
-      </complexType>
-
-      <complexType 
-        name="GetDocumentResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element 
-            name="request" 
-            type="tns:GetDocumentRequest"/>
-          <element 
-            name="response" 
-            type="tns:Document"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="Document">
-        <sequence>
-          <element 
-            name="document" 
-            type="base64Binary">
-            <annotation>
-              <appinfo>XML blob that contains the document</appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="xFormsTemplate" 
-            type="base64Binary">
-            <annotation>
-              <appinfo>XML blob that contains Xforms template for the document</appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetMessagesListRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"/>
-          <element name="citizenId" type="string">
-            <annotation>
-              <appinfo>Country specific identification number (i.e. personal
-                code in Estonia)
-              </appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetMessagesList">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetMessagesListRequest"></element>
-        </sequence>
-      </complexType>
-
-      <complexType 
-        name="GetMessagesListResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element 
-            name="request" 
-            type="tns:GetMessagesListRequest"/>
-          <element 
-            name="response" 
-            type="tns:MessagesList"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="MessagesList">
-        <sequence>
-          <element 
-            name="messages" 
-            maxOccurs="unbounded" 
-            minOccurs="0"
-            type="tns:Message"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="Message">
-        <sequence>
-          <element 
-            name="id" 
-            type="string">
-            <annotation>
-              <appinfo>Used by the system to refer to the message
-              </appinfo>
-            </annotation>
-          </element>
-          <element
-            name="sender"
-            type="tns:User"
-            minOccurs="1"
-            maxOccurs="1"/>
-          <element
-          	name="receivers"
-          	type="tns:User"
-          	minOccurs="1"
-          	maxOccurs="unbounded"/>
-          <element 
-            name="subject" 
-            type="string"/>
-          <element 
-            name="body" 
-            type="string"/>
-          <element 
-            name="viewURI" 
-            type="string"/>
-          <element 
-            name="date" 
-            type="date">
-            <annotation>
-              <appinfo>Indicates when the message was sent to the citizen</appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="orgLabel" 
-            type="tns:labelType">
-            <annotation>
-              <appinfo>Identifies the organization that sent the message
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-          	name="official" 
-          	type="string"
-          	nillable="true">
-            <annotation>
-              <appinfo>Identifies the person that sent the message
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="read" 
-            type="boolean" 
-            nillable="true">
-            <annotation>
-              <appinfo>Tells if message is read</appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="User">
-        <annotation>
-          <appinfo>Bean for receivers or senders</appinfo>
-        </annotation>
-        <sequence>
-          <element name="name" type="string"/>
-          <element name="email" type="string"/>
-          <element name="identificationNumber" type="string">
-            <annotation>
-              <appinfo>User id or personal id</appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetPrefilledDocumentRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="citizenId" type="string"/>
-          <element name="serviceId" type="string"/>
-          <element name="languageId" type="tns:langType"/>
-          <element name="stepId" type="string">
-            <annotation>
-              <appinfo>identifies task of document that should be filled
-              </appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetPrefilledDocument">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetPrefilledDocumentRequest"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetPrefilledDocumentResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetPrefilledDocumentRequest"/>
-          <element name="response" type="tns:PreffiledDocument"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-      	name="PreffiledDocument">
-        <sequence>
-          <element 
-            name="documentType" 
-            type="string" 
-            maxOccurs="1" 
-            minOccurs="0">
-            <annotation>
-              <appinfo>Associated document type that identifies the document
-                type (Xforms
-                specification)
-                that is used to render the document
-                to user
-              </appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="document" 
-            type="base64Binary" 
-            maxOccurs="1" 
-            minOccurs="0">
-            <annotation>
-              <appinfo>XML blob that contains the prefilled document
-              </appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="SubmitDocumentRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="citizenId" type="string"/>
-          <element name="serviceId" type="string"/>
-          <element name="languageId" type="string"/>
-          <element name="document" type="base64Binary">
-            <annotation>
-              <appinfo>XML document encoded as a blob</appinfo>
-            </annotation>
-          </element>
-          <element name="stepId" type="string">
-            <annotation>
-              <appinfo>Step ID of a case process</appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="SubmitDocument">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:SubmitDocumentRequest"/>
-        </sequence>
-
-      </complexType>
-
-      <complexType 
-        name="SubmitDocumentResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element 
-            name="request" 
-            type="tns:SubmitDocumentRequest"/>
-          <element 
-            name="response"
-            type="tns:SubmittedDocumentInfo">
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="SubmittedDocumentInfo">
-        <sequence>
-          <element name="submissionStatusLabel" type="tns:labelType">
-            <annotation>
-              <appinfo>indicates the result of the operation ok or not ok.
-                And
-                if
-                possible the
-                reason
-                for error
-              </appinfo>
-            </annotation>
-          </element>
-          <element name="caseNameLabel" type="tns:labelType">
-            <annotation>
-              <appinfo>Contains the name of the case as will later shown in the
-                case list
-              </appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetNotificationsRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="citizenId" type="string">
-          	<annotation>
-              <appinfo>Notifications owner personal ID</appinfo>
-            </annotation>
-          </element>
-          <element name="serviceProviderId" type="string"></element>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetNotifications">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-        <element name="request" type="tns:GetNotificationsRequest"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="GetNotificationsResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:GetNotificationsRequest"/>
-          <element name="response" type="tns:NotificationsList"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="NotificationsList">
-        <sequence>
-          <element 
-            name="notifications" 
-            maxOccurs="unbounded" 
-            minOccurs="0"
-            type="tns:Notification"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="Notification">
-        <sequence>
-          <element 
-            name="citizenId" 
-            type="string"/>
-          	<annotation>
-              <appinfo>Personal ID of notifications owner</appinfo>
-            </annotation>
-          <element 
-            name="textLabel" 
-            type="tns:labelType"/>
-          <element 
-            name="caseId" 
-            type="string" 
-            nillable="true"/>
-          <element 
-            name="notificationId" 
-            type="string" 
-            nillable="true">
-          	<annotation>
-              <appinfo>Identification number of notification</appinfo>
-            </annotation>
-          </element>
-          <element 
-            name="orgLabel" 
-            type="tns:labelType">
-            <annotation>
-              <appinfo>Label of the organization sending the
-                notification
-              </appinfo>
-            </annotation>
-          </element>
-        </sequence>
-      </complexType>
-
-      <complexType name="MarkCaseAsReadRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"/>
-          <element name="serviceId" type="string"/>
-          <element name="caseId" type="string"/>
-          <element name="markAsRead" type="boolean"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="MarkCaseAsRead">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:MarkCaseAsReadRequest"></element>
-        </sequence>
-      </complexType>
-
-      <complexType 
-        name="MarkCaseAsReadResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element 
-            name="request" 
-            type="tns:MarkCaseAsReadRequest"/>
-          <element 
-            name="response"
-            type="tns:MarkResult"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="MarkNotificationAsReadRequest">
-        <annotation>
-          <appinfo>Describes request content, used both in request and response</appinfo>
-        </annotation>
-        <sequence>
-          <element name="serviceProviderId" type="string"/>
-          <element name="serviceId" type="string"/>
-          <element name="notificationId" type="string"/>
-          <element name="markAsRead" type="boolean"/>
-        </sequence>
-      </complexType>
-
-      <complexType name="MarkNotificationAsRead">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <sequence>
-          <element name="request" type="tns:MarkNotificationAsReadRequest"></element>
-        </sequence>
-      </complexType>
-
-      <complexType name="MarkNotificationAsReadResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-        <sequence>
-          <element 
-            name="request" 
-            type="tns:MarkNotificationAsReadRequest"/>
-          <element 
-            name="response"
-            type="tns:MarkResult"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="MarkResult">
-        <sequence>
-          <element 
-            name="success" 
-            type="boolean"/>
-          <element 
-            name="message" 
-            type="string" 
-            minOccurs="0"/>
-        </sequence>
-      </complexType>
-
-      <!-- Meta-services - start -->
-      <element name="allowedMethods">
-        <annotation>
-          <appinfo>Corresponds to request message</appinfo>
-        </annotation>
-        <!-- Just random attribute to avoid nested elements -->
-        <complexType>
-          <attribute name="dummy" type="string" />
-        </complexType>
-      </element>
-
-      <element 
-        name="allowedMethodsResponse"
-        type="tns:AllowedMethodsResponse">
-        <annotation>
-          <appinfo>Corresponds to response message</appinfo>
-        </annotation>
-      </element>
-
-      <complexType
-        name="AllowedMethodsResponse">
-        <sequence>
-          <element 
-            name="response"
-            type="tns:AllowedMethodList"/>
-        </sequence>
-      </complexType>
-
-      <complexType
-        name="AllowedMethodList">
-        <sequence>
-          <element 
-            maxOccurs="unbounded" 
-            minOccurs="0" 
-            name="item" 
-            type="string"/>
-        </sequence>
-      </complexType>
-
-      <!-- Meta-services - end -->
-
-      <!-- Request-response types - end -->
-
-      <!-- Re-usable types - start -->
-
-      <complexType name="labelType">
-        <sequence>
-          <element name="lang" type="tns:langType"/>
-          <element name="text" type="string"/>
-        </sequence>
-      </complexType>
-
-      <simpleType name="langType">
-        <restriction base="string">
-          <!-- Allow exactly two letters! XXX Eclipse gives validation error, but in practice it seems 
-            to be working -->
-          <pattern value="\b[a-zA-Z]{2}\b"/>
-        </restriction>
-      </simpleType>
-
-      <!-- Re-usable types - end -->
-
-    </schema>
-  </wsdl:types>
-  <wsdl:message name="SubmitDocument">
-    <wsdl:part name="request" element="tns:SubmitDocument">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetXFormLabels">
-    <wsdl:part name="request" element="tns:GetXFormLabels">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetServiceList">
-    <wsdl:part name="request" element="tns:GetServiceList">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="xroadStandardHeader">
-    <wsdl:part element="xrd:consumer" name="consumer">
-    </wsdl:part>
-    <wsdl:part element="xrd:producer" name="producer">
-    </wsdl:part>
-    <wsdl:part element="xrd:userId" name="userId">
-    </wsdl:part>
-    <wsdl:part element="xrd:id" name="id">
-    </wsdl:part>
-    <wsdl:part element="xrd:service" name="service">
-    </wsdl:part>
-    <wsdl:part element="xrd:issue" name="issue">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetDocument">
-    <wsdl:part name="request" element="tns:GetDocument">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetXFormLabelsResponse">
-    <wsdl:part name="response" element="tns:GetXFormLabelsResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetCaseDetailsResponse">
-    <wsdl:part name="response" element="tns:GetCaseDetailsResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetNotificationsResponse">
-    <wsdl:part name="response" element="tns:GetNotificationsResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetPrefilledDocument">
-    <wsdl:part name="request" element="tns:GetPrefilledDocument">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetCaseDetails">
-    <wsdl:part name="request" element="tns:GetCaseDetails">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetPrefilledDocumentResponse">
-    <wsdl:part name="response" element="tns:GetPrefilledDocumentResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetServiceListResponse">
-    <wsdl:part name="response" element="tns:GetServiceListResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetDocumentResponse">
-    <wsdl:part name="response" element="tns:GetDocumentResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetCaseList">
-    <wsdl:part name="request" element="tns:GetCaseList">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetCaseListResponse">
-    <wsdl:part name="response" element="tns:GetCaseListResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="SubmitDocumentResponse">
-    <wsdl:part name="response" element="tns:SubmitDocumentResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetMessagesListResponse">
-    <wsdl:part name="response" element="tns:GetMessagesListResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetMessagesList">
-    <wsdl:part name="request" element="tns:GetMessagesList">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="GetNotifications">
-    <wsdl:part name="request" element="tns:GetNotifications">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="MarkCaseAsRead">
-    <wsdl:part name="request" element="tns:MarkCaseAsRead">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="MarkCaseAsReadResponse">
-    <wsdl:part name="response" element="tns:MarkCaseAsReadResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="MarkNotificationAsRead">
-    <wsdl:part name="request" element="tns:MarkNotificationAsRead">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="MarkNotificationAsReadResponse">
-    <wsdl:part name="response" element="tns:MarkNotificationAsReadResponse">
-    </wsdl:part>
-  </wsdl:message>
-
-  <!-- Meta service messages -->
-  <wsdl:message name="allowedMethods">
-    <wsdl:part name="request" element="tns:allowedMethods">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="allowedMethodsResponse">
-    <wsdl:part name="response" element="tns:allowedMethodsResponse">
-    </wsdl:part>
-  </wsdl:message>
-
-  <wsdl:portType name="ehubserviceporttype">
-    <wsdl:operation name="GetNotifications">
-      <wsdl:documentation>
-        <xrd:title>GetNotifications</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetNotifications" name="GetNotifications">
-      </wsdl:input>
-      <wsdl:output message="tns:GetNotificationsResponse" name="GetNotificationsResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetXFormLabels">
-      <wsdl:documentation>
-        <xrd:title>GetXFormLabels</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetXFormLabels" name="GetXFormLabels">
-      </wsdl:input>
-      <wsdl:output message="tns:GetXFormLabelsResponse" name="GetXFormLabelsResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetCaseDetails">
-      <wsdl:documentation>
-        <xrd:title>GetCaseDetails</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetCaseDetails" name="GetCaseDetails">
-      </wsdl:input>
-      <wsdl:output message="tns:GetCaseDetailsResponse" name="GetCaseDetailsResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetMessagesList">
-      <wsdl:documentation>
-        <xrd:title>GetMessagesList</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetMessagesList" name="GetMessagesList">
-      </wsdl:input>
-      <wsdl:output message="tns:GetMessagesListResponse" name="GetMessagesListResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="SubmitDocument">
-      <wsdl:documentation>
-        <xrd:title>SubmitDocument</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:SubmitDocument" name="SubmitDocument">
-      </wsdl:input>
-      <wsdl:output message="tns:SubmitDocumentResponse" name="SubmitDocumentResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetPrefilledDocument">
-      <wsdl:documentation>
-        <xrd:title>GetPrefilledDocument</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetPrefilledDocument" name="GetPrefilledDocument">
-      </wsdl:input>
-      <wsdl:output message="tns:GetPrefilledDocumentResponse" name="GetPrefilledDocumentResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetCaseList">
-      <wsdl:documentation>
-        <xrd:title>GetCaseList</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetCaseList" name="GetCaseList">
-      </wsdl:input>
-      <wsdl:output message="tns:GetCaseListResponse" name="GetCaseListResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetDocument">
-      <wsdl:documentation>
-        <xrd:title>GetDocument</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetDocument" name="GetDocument">
-      </wsdl:input>
-      <wsdl:output message="tns:GetDocumentResponse" name="GetDocumentResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetServiceList">
-      <wsdl:documentation>
-        <xrd:title>GetServiceList</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:GetServiceList" name="GetServiceList">
-      </wsdl:input>
-      <wsdl:output message="tns:GetServiceListResponse" name="GetServiceListResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="MarkCaseAsRead">
-      <wsdl:documentation>
-        <xrd:title>MarkCaseAsRead</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:MarkCaseAsRead" name="MarkCaseAsRead">
-      </wsdl:input>
-      <wsdl:output message="tns:MarkCaseAsReadResponse" name="MarkCaseAsReadResponse">
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="MarkNotificationAsRead">
-      <wsdl:documentation>
-        <xrd:title>MarkNotificationAsRead</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:MarkNotificationAsRead" name="MarkNotificationAsRead">
-      </wsdl:input>
-      <wsdl:output message="tns:MarkNotificationAsReadResponse" name="MarkNotificationAsReadResponse">
-      </wsdl:output>
-    </wsdl:operation>
-
-    <!-- Meta services -->
-    <wsdl:operation name="allowedMethods">
-      <wsdl:documentation>
-        <xrd:title>allowedMethods</xrd:title>
-      </wsdl:documentation>
-      <wsdl:input message="tns:allowedMethods">
-      </wsdl:input>
-      <wsdl:output message="tns:allowedMethodsResponse">
-      </wsdl:output>
-    </wsdl:operation>
-  </wsdl:portType>
-  <wsdl:binding name="ehubservicebinding" type="tns:ehubserviceporttype">
-    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="GetNotifications">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetNotifications">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetNotificationsResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetXFormLabels">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetXFormLabels">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetXFormLabelsResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetCaseDetails">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetCaseDetails">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetCaseDetailsResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetMessagesList">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetMessagesList">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetMessagesListResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="SubmitDocument">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="SubmitDocument">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="SubmitDocumentResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetPrefilledDocument">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetPrefilledDocument">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetPrefilledDocumentResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetCaseList">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetCaseList">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetCaseListResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetDocument">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetDocument">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetDocumentResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetServiceList">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="GetServiceList">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="GetServiceListResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="MarkCaseAsRead">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="MarkCaseAsRead">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="MarkCaseAsReadResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="MarkNotificationAsRead">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input name="MarkNotificationAsRead">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output name="MarkNotificationAsReadResponse">
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-
-    <!-- Meta services -->
-    <wsdl:operation name="allowedMethods">
-      <xrd:version>v1</xrd:version>
-      <wsdl:input>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="consumer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="producer" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="userId" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="id" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="service" use="literal">
-        </soap:header>
-        <soap:header message="tns:xroadStandardHeader" namespace="http://x-rd.net/xsd/xroad.xsd"
-          part="issue" use="literal">
-        </soap:header>
-        <soap:body namespace="http://ehubservice.x-road.ee/producer/" use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-  </wsdl:binding>
-  <wsdl:service name="ehubserviceService">
-    <wsdl:port binding="tns:ehubservicebinding" name="ehubserviceSoap11">
-      <!-- ATTENTION - replace with correct security server address for Your environment -->
-      <soap:address location="http://127.0.0.1:8080/axis2/services/ehubserviceService" />
-      <xrd:address producer="ehubservice" />
-    </wsdl:port>
-  </wsdl:service>
+<wsdl:definitions
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:sch="http://ehubservice.ee.x-rd.net/producer/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://ehubservice.ee.x-rd.net/producer/"
+	xmlns:xrd="http://x-rd.net/xsd/xroad.xsd"
+	targetNamespace="http://ehubservice.ee.x-rd.net/producer/">
+	<wsdl:types>
+		<schema
+			xmlns="http://www.w3.org/2001/XMLSchema"
+			xmlns:ref="http://ws-i.org/profiles/basic/1.1/xsd"
+			xmlns:tns="http://ehubservice.ee.x-rd.net/producer/"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			targetNamespace="http://ehubservice.ee.x-rd.net/producer/">
+			<import
+				namespace="http://x-rd.net/xsd/xroad.xsd"
+				schemaLocation="http://x-rd.net/xsd/xroad.xsd" />
+			<!-- <import namespace="http://ws-i.org/profiles/basic/1.1/xsd" -->
+			<!-- schemaLocation="http://ws-i.org/profiles/basic/1.1/swaref.xsd" /> -->
+			<!-- Request-response declarations - start -->
+			<element
+				name="GetXFormLabels"
+				type="tns:GetXFormLabels" />
+			<element
+				name="GetXFormLabelsResponse"
+				type="tns:GetXFormLabelsResponse" />
+			<element
+				name="GetServiceList"
+				type="tns:GetServiceList" />
+			<element
+				name="GetServiceListResponse"
+				type="tns:GetServiceListResponse" />
+			<element
+				name="GetCaseList"
+				type="tns:GetCaseList" />
+			<element
+				name="GetCaseListResponse"
+				type="tns:GetCaseListResponse" />
+			<element
+				name="GetCaseDetails"
+				type="tns:GetCaseDetails" />
+			<element
+				name="GetCaseDetailsResponse"
+				type="tns:GetCaseDetailsResponse" />
+			<element
+				name="GetDocument"
+				type="tns:GetDocument" />
+			<element
+				name="GetDocumentResponse"
+				type="tns:GetDocumentResponse" />
+			<element
+				name="GetMessagesList"
+				type="tns:GetMessagesList" />
+			<element
+				name="GetMessagesListResponse"
+				type="tns:GetMessagesListResponse" />
+			<element
+				name="GetPrefilledDocument"
+				type="tns:GetPrefilledDocument" />
+			<element
+				name="GetPrefilledDocumentResponse"
+				type="tns:GetPrefilledDocumentResponse" />
+			<element
+				name="SubmitDocument"
+				type="tns:SubmitDocument" />
+			<element
+				name="SubmitDocumentResponse"
+				type="tns:SubmitDocumentResponse" />
+			<element
+				name="GetNotifications"
+				type="tns:GetNotifications" />
+			<element
+				name="GetNotificationsResponse"
+				type="tns:GetNotificationsResponse" />
+			<element
+				name="MarkCaseAsRead"
+				type="tns:MarkCaseAsRead" />
+			<element
+				name="MarkCaseAsReadResponse"
+				type="tns:MarkCaseAsReadResponse" />
+			<element
+				name="MarkNotificationAsRead"
+				type="tns:MarkNotificationAsRead" />
+			<element
+				name="MarkNotificationAsReadResponse"
+				type="tns:MarkNotificationAsReadResponse" />
+			<element
+				name="listMethods"
+				type="tns:ListMethodsRequestType"/>
+			<element 
+				name="listMethodsResponse"
+				type="tns:ListMethodsResponseType"/>
+			<!-- Request-response declarations - end -->
+			<!-- Request-response types - start -->
+			<complexType name="GetXFormLabelsRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string" />
+					<element
+						name="xFormId"
+						type="string" />
+					<element
+						name="lang"
+						type="tns:langType">
+						<annotation>
+							<appinfo>Language in ISO format</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetXFormLabels">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetXFormLabelsRequest" />
+				</sequence>
+			</complexType>
+			<complexType name="GetXFormLabelsResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetXFormLabelsRequest" />
+					<element
+						name="response"
+						type="tns:XFormLabel" />
+				</sequence>
+			</complexType>
+			<complexType name="XFormLabel">
+				<sequence>
+					<element
+						name="labelPairs"
+						maxOccurs="unbounded"
+						minOccurs="0"
+						type="tns:LabelPair">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="LabelPair">
+				<sequence>
+					<element
+						name="key"
+						type="string">
+						<annotation>
+							<appinfo>Keyword for a label</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="label"
+						type="string">
+						<annotation>
+							<appinfo>Translation for a given language and form</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetServiceListRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string"></element>
+				</sequence>
+			</complexType>
+			<complexType name="GetServiceList">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetServiceListRequest"></element>
+				</sequence>
+			</complexType>
+			<complexType name="GetServiceListResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetServiceListRequest" />
+					<element
+						name="response"
+						type="tns:ServiceList" />
+				</sequence>
+			</complexType>
+			<complexType name="ServiceList">
+				<sequence>
+					<element
+						name="serviceEntries"
+						maxOccurs="unbounded"
+						minOccurs="0"
+						type="tns:ServiceEntry">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="ServiceEntry">
+				<sequence>
+					<element
+						name="id"
+						type="string">
+						<annotation>
+							<appinfo>Used by the system to refer the service</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="nameLabel"
+						type="tns:labelType" />
+					<element
+						name="icon"
+						type="base64Binary"
+						maxOccurs="1"
+						minOccurs="0" />
+					<element
+						name="iconURI"
+						type="string"
+						nillable="true"/>
+					<element
+						name="serviceURI"
+						type="string" />
+					<element
+						name="subscribers"
+						type="tns:User"
+						maxOccurs="unbounded"
+						minOccurs="0" />
+					<element
+						name="requiresSecureSession"
+						type="boolean" />
+					<element
+						name="companyId"
+						type="string"
+						nillable="true"/>
+				</sequence>
+			</complexType>
+			<complexType name="GetCaseListRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string" />
+					<element
+						name="citizenId"
+						type="string">
+						<annotation>
+							<appinfo>Country specific identification number (i.e. personal code in Estonia)</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetCaseList">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetCaseListRequest"></element>
+				</sequence>
+			</complexType>
+			<complexType name="GetCaseListResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetCaseListRequest" />
+					<element
+						name="response"
+						type="tns:CaseList" />
+				</sequence>
+			</complexType>
+			<complexType name="CaseList">
+				<sequence>
+					<element
+						name="cases"
+						maxOccurs="unbounded"
+						minOccurs="0"
+						type="tns:Case" />
+				</sequence>
+			</complexType>
+			<complexType name="Case">
+				<sequence>
+					<element
+						name="id"
+						type="string">
+						<annotation>
+							<appinfo>Used by the system to refer to the case</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="typeLabel"
+						type="tns:labelType"
+						nillable="true">
+						<annotation>
+							<appinfo>Identifies the type of the case (e.g. "Application for	parking permit")	</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="nameLabel"
+						type="tns:labelType"
+						nillable="true">
+						<annotation>
+							<appinfo>Identifies the particular case</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="statusLabel"
+						type="tns:labelType"
+						nillable="true">
+						<annotation>
+							<appinfo>Identifies the processing step of the case (e.g.	"completed", "in progress", "waiting for clarifications")</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="lastOperationDate"
+						type="date"
+						nillable="true">
+						<annotation>
+							<appinfo>Indicates when the case was last time modified in the service provider system</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="nextOperationTime"
+						type="dateTime"
+						nillable="true">
+						<annotation>
+							<appinfo>Case next operation time indicates when is the last possible time when the case will be modified in the system again</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="orgLabel"
+						type="tns:labelType">
+						<annotation>
+							<appinfo>Identifies the organization that is currently responsible for handling the case</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="official"
+						type="string"
+						nillable="true">
+						<annotation>
+							<appinfo>Identifies person who is responsible for handling of the case at the moment</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="serviceId"
+						type="string"></element>
+				</sequence>
+			</complexType>
+			<complexType name="GetCaseDetailsRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string" />
+					<element
+						name="caseId"
+						type="string" />
+				</sequence>
+			</complexType>
+			<complexType name="GetCaseDetails">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetCaseDetailsRequest" />
+				</sequence>
+			</complexType>
+			<complexType name="GetCaseDetailsResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetCaseDetailsRequest" />
+					<element
+						name="response"
+						type="tns:CaseDetails" />
+				</sequence>
+			</complexType>
+			<complexType name="CaseDetails">
+				<sequence>
+					<element
+						name="caseProcessingStep"
+						maxOccurs="unbounded"
+						minOccurs="0"
+						type="tns:CaseStep" />
+				</sequence>
+			</complexType>
+			<complexType name="CaseStep">
+				<sequence>
+					<element
+						name="stepId"
+						type="string">
+						<annotation>
+							<appinfo>Used by system to identify case processing step</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="statusLabel"
+						type="tns:labelType"
+						nillable="true">
+						<annotation>
+							<appinfo>Contains the status of the case for this step</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="operationDate"
+						type="date"
+						nillable="true">
+						<annotation>
+							<appinfo>Indicates when was the operation performed</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="orgLabel"
+						type="tns:labelType">
+						<annotation>
+							<appinfo>Indicates which organization performed the step</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="official"
+						type="string"
+						nillable="true">
+						<annotation>
+							<appinfo>Indicates which person performed the step</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="documentId"
+						type="string"
+						nillable="true"
+						maxOccurs="unbounded">
+						<annotation>
+							<appinfo>Identifies additional document that is associated with the processing step</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="submitted"
+						type="boolean"
+						nillable="true">
+						<annotation>
+							<appinfo>Identifies is step task is submitted or not</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="stepName"
+						type="string"
+						nillable="true" />
+					<element
+						name="stepUrl"
+						type="string"
+						nillable="true" />
+					<element
+						name="iconURI"
+						type="string" />
+					<element
+						name="sender"
+						type="tns:User" />
+				</sequence>
+			</complexType>
+			<complexType name="GetDocumentRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string" />
+					<element
+						name="documentId"
+						type="string" />
+				</sequence>
+			</complexType>
+			<complexType name="GetDocument">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetDocumentRequest" />
+				</sequence>
+			</complexType>
+			<complexType name="GetDocumentResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetDocumentRequest" />
+					<element
+						name="response"
+						type="tns:Document" />
+				</sequence>
+			</complexType>
+			<complexType name="Document">
+				<sequence>
+					<element
+						name="document"
+						type="base64Binary">
+						<annotation>
+							<appinfo>XML blob that contains the document</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="xFormsTemplate"
+						type="base64Binary">
+						<annotation>
+							<appinfo>XML blob that contains Xforms template for the document</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetMessagesListRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string" />
+					<element
+						name="citizenId"
+						type="string">
+						<annotation>
+							<appinfo>Country specific identification number (i.e. personal code in Estonia)</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetMessagesList">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetMessagesListRequest"></element>
+				</sequence>
+			</complexType>
+			<complexType name="GetMessagesListResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetMessagesListRequest" />
+					<element
+						name="response"
+						type="tns:MessagesList" />
+				</sequence>
+			</complexType>
+			<complexType name="MessagesList">
+				<sequence>
+					<element
+						name="messages"
+						maxOccurs="unbounded"
+						minOccurs="0"
+						type="tns:Message" />
+				</sequence>
+			</complexType>
+			<complexType name="Message">
+				<sequence>
+					<element
+						name="id"
+						type="string">
+						<annotation>
+							<appinfo>Used by the system to refer to the message</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="sender"
+						type="tns:User"
+						minOccurs="1"
+						maxOccurs="1" />
+					<element
+						name="receivers"
+						type="tns:User"
+						minOccurs="1"
+						maxOccurs="unbounded" />
+					<element
+						name="subject"
+						type="string" />
+					<element
+						name="body"
+						type="string" />
+					<element
+						name="viewURI"
+						type="string" />
+					<element
+						name="date"
+						type="date">
+						<annotation>
+							<appinfo>Indicates when the message was sent to the citizen</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="orgLabel"
+						type="tns:labelType">
+						<annotation>
+							<appinfo>Identifies the organization that sent the message</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="official"
+						type="string"
+						nillable="true">
+						<annotation>
+							<appinfo>Identifies the person that sent the message</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="read"
+						type="boolean"
+						nillable="true">
+						<annotation>
+							<appinfo>Tells if message is read</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="User">
+				<annotation>
+					<appinfo>Bean for receivers or senders</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="name"
+						type="string" />
+					<element
+						name="email"
+						type="string" />
+					<element
+						name="identificationNumber"
+						type="string">
+						<annotation>
+							<appinfo>User id or personal id</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetPrefilledDocumentRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="citizenId"
+						type="string" />
+					<element
+						name="serviceId"
+						type="string" />
+					<element
+						name="languageId"
+						type="tns:langType" />
+					<element
+						name="stepId"
+						type="string">
+						<annotation>
+							<appinfo>identifies task of document that should be filled</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetPrefilledDocument">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetPrefilledDocumentRequest" />
+				</sequence>
+			</complexType>
+			<complexType name="GetPrefilledDocumentResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetPrefilledDocumentRequest" />
+					<element
+						name="response"
+						type="tns:PreffiledDocument" />
+				</sequence>
+			</complexType>
+			<complexType name="PreffiledDocument">
+				<sequence>
+					<element
+						name="documentType"
+						type="string"
+						maxOccurs="1"
+						minOccurs="0">
+						<annotation>
+							<appinfo>Associated document type that identifies the document type (Xforms specification) that is used to render the document to user</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="document"
+						type="base64Binary"
+						maxOccurs="1"
+						minOccurs="0">
+						<annotation>
+							<appinfo>XML blob that contains the prefilled document</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SubmitDocumentRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and
+						response
+					</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="citizenId"
+						type="string" />
+					<element
+						name="serviceId"
+						type="string" />
+					<element
+						name="languageId"
+						type="string" />
+					<element
+						name="document"
+						type="base64Binary">
+						<annotation>
+							<appinfo>XML document encoded as a blob</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="stepId"
+						type="string">
+						<annotation>
+							<appinfo>Step ID of a case process</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SubmitDocument">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:SubmitDocumentRequest" />
+				</sequence>
+			</complexType>
+			<complexType name="SubmitDocumentResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:SubmitDocumentRequest" />
+					<element
+						name="response"
+						type="tns:SubmittedDocumentInfo">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SubmittedDocumentInfo">
+				<sequence>
+					<element
+						name="submissionStatusLabel"
+						type="tns:labelType">
+						<annotation>
+							<appinfo>indicates the result of the operation ok or not ok. And if possible the reason for error</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="caseNameLabel"
+						type="tns:labelType">
+						<annotation>
+							<appinfo>Contains the name of the case as will later shown in the case list</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="GetNotificationsRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="citizenId"
+						type="string">
+						<annotation>
+							<appinfo>Notifications owner personal ID</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="serviceProviderId"
+						type="string"/>
+				</sequence>
+			</complexType>
+			<complexType name="GetNotifications">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetNotificationsRequest" />
+				</sequence>
+			</complexType>
+			<complexType name="GetNotificationsResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:GetNotificationsRequest" />
+					<element
+						name="response"
+						type="tns:NotificationsList" />
+				</sequence>
+			</complexType>
+			<complexType name="NotificationsList">
+				<sequence>
+					<element
+						name="notifications"
+						maxOccurs="unbounded"
+						minOccurs="0"
+						type="tns:Notification" />
+				</sequence>
+			</complexType>
+			<complexType name="Notification">
+				<sequence>
+					<element
+						name="citizenId"
+						type="string" />
+					<annotation>
+						<appinfo>Personal ID of notifications owner</appinfo>
+					</annotation>
+					<element
+						name="textLabel"
+						type="tns:labelType" />
+					<element
+						name="caseId"
+						type="string"
+						nillable="true" />
+					<element
+						name="notificationId"
+						type="string"
+						nillable="true">
+						<annotation>
+							<appinfo>Identification number of notification</appinfo>
+						</annotation>
+					</element>
+					<element
+						name="orgLabel"
+						type="tns:labelType">
+						<annotation>
+							<appinfo>Label of the organization sending the notification
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="MarkCaseAsReadRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string" />
+					<element
+						name="serviceId"
+						type="string" />
+					<element
+						name="caseId"
+						type="string" />
+					<element
+						name="markAsRead"
+						type="boolean" />
+				</sequence>
+			</complexType>
+			<complexType name="MarkCaseAsRead">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:MarkCaseAsReadRequest"></element>
+				</sequence>
+			</complexType>
+			<complexType name="MarkCaseAsReadResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:MarkCaseAsReadRequest" />
+					<element
+						name="response"
+						type="tns:MarkResult" />
+				</sequence>
+			</complexType>
+			<complexType name="MarkNotificationAsReadRequest">
+				<annotation>
+					<appinfo>Describes request content, used both in request and response </appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="serviceProviderId"
+						type="string" />
+					<element
+						name="serviceId"
+						type="string" />
+					<element
+						name="notificationId"
+						type="string" />
+					<element
+						name="markAsRead"
+						type="boolean" />
+				</sequence>
+			</complexType>
+			<complexType name="MarkNotificationAsRead">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:MarkNotificationAsReadRequest"></element>
+				</sequence>
+			</complexType>
+			<complexType name="MarkNotificationAsReadResponse">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:MarkNotificationAsReadRequest" />
+					<element
+						name="response"
+						type="tns:MarkResult" />
+				</sequence>
+			</complexType>
+			<complexType name="MarkResult">
+				<sequence>
+					<element
+						name="success"
+						type="boolean" />
+					<element
+						name="message"
+						type="string"
+						minOccurs="0" />
+				</sequence>
+			</complexType>
+			<!-- Meta-services - start -->
+			<element 
+				name="allowedMethodsRequest"
+				type="tns:AllowedMethodsRequestType">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+			</element>
+			<element
+				name="allowedMethodsResponse"
+				type="tns:AllowedMethodsList">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+			</element>
+			<complexType name="ListMethodsRequestType">
+				<annotation>
+					<appinfo>Corresponds to request message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:AllowedMethodsRequestType"></element>
+				</sequence>
+			</complexType>
+			<complexType name="ListMethodsResponseType">
+				<annotation>
+					<appinfo>Corresponds to response message</appinfo>
+				</annotation>
+				<sequence>
+					<element
+						name="request"
+						type="tns:AllowedMethodsRequestType" />
+					<element
+						name="response"
+						type="tns:AllowedMethodsList" />
+				</sequence>
+			</complexType>
+			<complexType name="AllowedMethodsRequestType">
+				<sequence>
+					<element
+						name="personalId"
+						type="string" />
+				</sequence>
+			</complexType>
+			<complexType name="AllowedMethodsList">
+				<sequence>
+					<element
+						maxOccurs="unbounded"
+						minOccurs="0"
+						name="item"
+						type="string"/>
+				</sequence>
+			</complexType>
+			<!-- Meta-services - end -->
+			<!-- Request-response types - end -->
+			<!-- Re-usable types - start -->
+			<complexType name="labelType">
+				<sequence>
+					<element
+						name="lang"
+						type="tns:langType" />
+					<element
+						name="text"
+						type="string" />
+				</sequence>
+			</complexType>
+			<simpleType name="langType">
+				<restriction base="string">
+					<!-- Allow exactly two letters! XXX Eclipse gives validation error, 
+						but in practice it seems to be working -->
+					<pattern value="\b[a-zA-Z]{2}\b" />
+				</restriction>
+			</simpleType>
+			<!-- Re-usable types - end -->
+		</schema>
+	</wsdl:types>
+	<wsdl:message name="SubmitDocument">
+		<wsdl:part
+			name="request"
+			element="tns:SubmitDocument">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetXFormLabels">
+		<wsdl:part
+			name="request"
+			element="tns:GetXFormLabels">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetServiceList">
+		<wsdl:part
+			name="request"
+			element="tns:GetServiceList">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="xroadStandardHeader">
+		<wsdl:part
+			element="xrd:consumer"
+			name="consumer">
+		</wsdl:part>
+		<wsdl:part
+			element="xrd:producer"
+			name="producer">
+		</wsdl:part>
+		<wsdl:part
+			element="xrd:userId"
+			name="userId">
+		</wsdl:part>
+		<wsdl:part
+			element="xrd:id"
+			name="id">
+		</wsdl:part>
+		<wsdl:part
+			element="xrd:service"
+			name="service">
+		</wsdl:part>
+		<wsdl:part
+			element="xrd:issue"
+			name="issue">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetDocument">
+		<wsdl:part
+			name="request"
+			element="tns:GetDocument">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetXFormLabelsResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetXFormLabelsResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetCaseDetailsResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetCaseDetailsResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetNotificationsResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetNotificationsResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetPrefilledDocument">
+		<wsdl:part
+			name="request"
+			element="tns:GetPrefilledDocument">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetCaseDetails">
+		<wsdl:part
+			name="request"
+			element="tns:GetCaseDetails">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetPrefilledDocumentResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetPrefilledDocumentResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetServiceListResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetServiceListResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetDocumentResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetDocumentResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetCaseList">
+		<wsdl:part
+			name="request"
+			element="tns:GetCaseList">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetCaseListResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetCaseListResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="SubmitDocumentResponse">
+		<wsdl:part
+			name="response"
+			element="tns:SubmitDocumentResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetMessagesListResponse">
+		<wsdl:part
+			name="response"
+			element="tns:GetMessagesListResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetMessagesList">
+		<wsdl:part
+			name="request"
+			element="tns:GetMessagesList">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="GetNotifications">
+		<wsdl:part
+			name="request"
+			element="tns:GetNotifications">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="MarkCaseAsRead">
+		<wsdl:part
+			name="request"
+			element="tns:MarkCaseAsRead">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="MarkCaseAsReadResponse">
+		<wsdl:part
+			name="response"
+			element="tns:MarkCaseAsReadResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="MarkNotificationAsRead">
+		<wsdl:part
+			name="request"
+			element="tns:MarkNotificationAsRead">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="MarkNotificationAsReadResponse">
+		<wsdl:part
+			name="response"
+			element="tns:MarkNotificationAsReadResponse">
+		</wsdl:part>
+	</wsdl:message>
+	<!-- Meta service messages -->
+	<wsdl:message name="allowedMethodsRequestMessage">
+		<wsdl:part
+			name="request"
+			element="tns:allowedMethodsRequest" />
+	</wsdl:message>
+	<wsdl:message name="allowedMethodsResponseMessage">
+		<wsdl:part
+			name="response"
+			element="tns:allowedMethodsResponse" />
+	</wsdl:message>
+	<wsdl:message name="listMethodsRequestMessage">
+		<wsdl:part
+			name="request"
+			element="tns:listMethods" />
+	</wsdl:message>
+	<wsdl:message name="listMethodsResponseMessage">
+		<wsdl:part
+			name="response"
+			element="tns:listMethodsResponse" />
+	</wsdl:message>
+	<wsdl:portType name="ehubserviceporttype">
+		<wsdl:operation name="GetNotifications">
+			<wsdl:documentation>
+				<xrd:title>GetNotifications</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetNotifications"
+				name="GetNotifications">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetNotificationsResponse"
+				name="GetNotificationsResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetXFormLabels">
+			<wsdl:documentation>
+				<xrd:title>GetXFormLabels</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetXFormLabels"
+				name="GetXFormLabels">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetXFormLabelsResponse"
+				name="GetXFormLabelsResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCaseDetails">
+			<wsdl:documentation>
+				<xrd:title>GetCaseDetails</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetCaseDetails"
+				name="GetCaseDetails">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetCaseDetailsResponse"
+				name="GetCaseDetailsResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetMessagesList">
+			<wsdl:documentation>
+				<xrd:title>GetMessagesList</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetMessagesList"
+				name="GetMessagesList">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetMessagesListResponse"
+				name="GetMessagesListResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SubmitDocument">
+			<wsdl:documentation>
+				<xrd:title>SubmitDocument</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:SubmitDocument"
+				name="SubmitDocument">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:SubmitDocumentResponse"
+				name="SubmitDocumentResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetPrefilledDocument">
+			<wsdl:documentation>
+				<xrd:title>GetPrefilledDocument</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetPrefilledDocument"
+				name="GetPrefilledDocument">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetPrefilledDocumentResponse"
+				name="GetPrefilledDocumentResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCaseList">
+			<wsdl:documentation>
+				<xrd:title>GetCaseList</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetCaseList"
+				name="GetCaseList">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetCaseListResponse"
+				name="GetCaseListResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocument">
+			<wsdl:documentation>
+				<xrd:title>GetDocument</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetDocument"
+				name="GetDocument">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetDocumentResponse"
+				name="GetDocumentResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetServiceList">
+			<wsdl:documentation>
+				<xrd:title>GetServiceList</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:GetServiceList"
+				name="GetServiceList">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:GetServiceListResponse"
+				name="GetServiceListResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="MarkCaseAsRead">
+			<wsdl:documentation>
+				<xrd:title>MarkCaseAsRead</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:MarkCaseAsRead"
+				name="MarkCaseAsRead">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:MarkCaseAsReadResponse"
+				name="MarkCaseAsReadResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="MarkNotificationAsRead">
+			<wsdl:documentation>
+				<xrd:title>MarkNotificationAsRead</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input
+				message="tns:MarkNotificationAsRead"
+				name="MarkNotificationAsRead">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:MarkNotificationAsReadResponse"
+				name="MarkNotificationAsReadResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<!-- Meta services -->
+		<wsdl:operation name="allowedMethods">
+			<wsdl:documentation>
+				<xrd:title>allowedMethods</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input message="tns:allowedMethodsRequestMessage" />
+			<wsdl:output message="tns:allowedMethodsResponseMessage" />
+		</wsdl:operation>
+		<wsdl:operation name="listMethods">
+			<wsdl:documentation>
+				<xrd:title>listMethods</xrd:title>
+			</wsdl:documentation>
+			<wsdl:input message="tns:listMethodsRequestMessage" />
+			<wsdl:output message="tns:listMethodsResponseMessage" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding
+		name="ehubservicebinding"
+		type="tns:ehubserviceporttype">
+		<soap:binding
+			style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="GetNotifications">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetNotifications">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetNotificationsResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetXFormLabels">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetXFormLabels">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetXFormLabelsResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCaseDetails">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetCaseDetails">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetCaseDetailsResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetMessagesList">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetMessagesList">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetMessagesListResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SubmitDocument">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="SubmitDocument">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="SubmitDocumentResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetPrefilledDocument">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetPrefilledDocument">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetPrefilledDocumentResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetCaseList">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetCaseList">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetCaseListResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetDocument">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetDocument">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetDocumentResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetServiceList">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="GetServiceList">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="GetServiceListResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="MarkCaseAsRead">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="MarkCaseAsRead">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="MarkCaseAsReadResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="MarkNotificationAsRead">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input name="MarkNotificationAsRead">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output name="MarkNotificationAsReadResponse">
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<!-- Meta services -->
+		<wsdl:operation name="allowedMethods">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="listMethods">
+			<xrd:version>v1</xrd:version>
+			<wsdl:input>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="consumer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="producer"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="userId"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="id"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="service"
+					use="literal">
+				</soap:header>
+				<soap:header
+					message="tns:xroadStandardHeader"
+					namespace="http://x-rd.net/xsd/xroad.xsd"
+					part="issue"
+					use="literal">
+				</soap:header>
+				<soap:body
+					namespace="http://ehubservice.x-road.ee/producer/"
+					use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ehubserviceService">
+		<wsdl:port
+			binding="tns:ehubservicebinding"
+			name="ehubserviceSoap11">
+			<!-- ATTENTION - replace with correct security server address for Your 
+				environment -->
+			<soap:address
+				location="http://127.0.0.1:8080/axis2/services/ehubserviceService" />
+			<xrd:address producer="ehubservice" />
+		</wsdl:port>
+	</wsdl:service>
 </wsdl:definitions>

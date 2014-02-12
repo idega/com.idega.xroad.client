@@ -1,5 +1,5 @@
 /**
- * @(#)XRoadClientConstants.java    1.0.0 12:17:07 PM
+ * @(#)ServiceProviderEntity.java    1.0.0 11:46:15 AM
  *
  * Idega Software hf. Source Code Licence Agreement x
  *
@@ -80,35 +80,97 @@
  *     License that was purchased to become eligible to receive the Source 
  *     Code after Licensee receives the source code. 
  */
-package com.idega.xroad.client;
+package com.idega.xroad.client.data;
 
-import com.idega.util.CoreConstants;
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
+ * <p>Entity for saving information about connections to other services.</p>
  * <p>You can report about problems to: 
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
- * @version 1.0.0 May 7, 2013
+ * @version 1.0.0 Nov 27, 2013
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface XRoadClientConstants {
+@Entity
+@Table(name = ServiceProviderEntity.TABLE_NAME)
+@NamedQueries({
+	@NamedQuery(
+			name = ServiceProviderEntity.QUERY_FIND_ALL, 
+			query = "SELECT s FROM ServiceProviderEntity s"),
+	@NamedQuery(
+			name = ServiceProviderEntity.QUERY_FIND_BY_ID, 
+			query = "SELECT s FROM ServiceProviderEntity s " +
+					"WHERE s.id = :" + ServiceProviderEntity.idProp),
+	@NamedQuery(
+			name = ServiceProviderEntity.QUERY_FIND_BY_URL, 
+			query = "SELECT s FROM ServiceProviderEntity s " +
+					"WHERE s.url = :" + ServiceProviderEntity.urlProp)
+})
+public class ServiceProviderEntity implements Serializable {
 
-	public static final String BUNDLE_IDENTIFIER = "com.idega.xroad.client";
+	private static final long serialVersionUID = -5368746794786058709L;
+
+	public static final String TABLE_NAME = "ehub_service_providers";
+
+	public static final String QUERY_FIND_ALL = "serviceProviderEntity.findAll";
+	public static final String QUERY_FIND_BY_ID = "serviceProviderEntity.findById";
+	public static final String QUERY_FIND_BY_URL = "serviceProviderEntity.findByUrl";
+
+	public static final String idProp = "id";
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	public static final String providerIdProp = "providerId";
+	public static final String COLUMN_PROVIDER_ID = "PROVIDER_ID";
+	@Column(name = COLUMN_PROVIDER_ID)
+	private Long providerId;
 	
-	public static final String SERVICE_PRODUCER = "db01";
-	public static final String SERVICE_CONSUMER = "ehub"; 
-	
-	public static final String 
-		SERVICE_GET_XFORMS_LABELS = SERVICE_PRODUCER + CoreConstants.DOT + "GetXFormLabels",
-		SERVICE_GET_SERVICE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetServiceList",
-		SERVICE_GET_CASE_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseList",
-		SERVICE_GET_CASE_DETAILS = SERVICE_PRODUCER + CoreConstants.DOT + "GetCaseDetails",
-		SERVICE_GET_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetDocument",
-		SERVICE_GET_MESSAGES_LIST = SERVICE_PRODUCER + CoreConstants.DOT + "GetMessagesList",
-		SERVICE_GET_PREFILLED_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "GetPrefilledDocument",
-		SERVICE_SUBMIT_DOCUMENT = SERVICE_PRODUCER + CoreConstants.DOT + "SubmitDocument", 
-		SERVICE_GET_NOTIFICATIONS = SERVICE_PRODUCER + CoreConstants.DOT + "GetNotifications",
-		SERVICE_MARK_NOTIFICATION_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkNotificationAsRead",
-		SERVICE_MARK_CASE_AS_READ = SERVICE_PRODUCER + CoreConstants.DOT + "MarkCaseAsRead",
-		SERVICE_LIST_METHODS = SERVICE_PRODUCER + CoreConstants.DOT + "listMethods";
+	public static final String nameProp = "name";
+	public static final String COLUMN_NAME = "NAME";
+	@Column(name = COLUMN_NAME)
+	private String name;
+
+	public static final String urlProp = "url";
+	public static final String COLUMN_URL = "URL";
+	@Column(name = COLUMN_URL, unique=true, nullable=false)
+	private String url;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public Long getProviderId() {
+		return providerId;
+	}
+
+	public void setProviderId(Long providerId) {
+		this.providerId = providerId;
+	}
 }

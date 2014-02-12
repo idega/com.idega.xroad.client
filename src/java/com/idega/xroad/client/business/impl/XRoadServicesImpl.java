@@ -121,6 +121,9 @@ import com.idega.xformsmanager.manager.XFormsManagerFactory;
 import com.idega.xroad.client.XRoadClientConstants;
 import com.idega.xroad.client.business.XRoadServices;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.AllowedMethodsList;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.AllowedMethodsRequestType;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.AllowedMethodsResponse;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Case;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseDetails;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.CaseList;
@@ -170,6 +173,10 @@ import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Id;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.Issue;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LabelPair;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.LangType;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ListMethodsE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ListMethodsRequestType;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ListMethodsResponseE;
+import com.idega.xroad.client.wsdl.EhubserviceServiceStub.ListMethodsResponseType;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsRead;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadE;
 import com.idega.xroad.client.wsdl.EhubserviceServiceStub.MarkCaseAsReadRequest;
@@ -215,6 +222,55 @@ public class XRoadServicesImpl extends DefaultSpringBean implements XRoadService
 
 	@Autowired
 	private XFormsManagerFactory xformsManagerFactory;
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.xroad.client.business.XRoadServices#getMethodsList(com.idega.user.data.User, java.lang.String)
+	 */
+	@Override
+	public String[] getMethodsList(User user, String serviceProviderId) {
+		if (StringUtil.isEmpty(serviceProviderId)) {
+			return null;
+		}
+
+		AllowedMethodsRequestType allowedMethodsRequestType = getInstantiatedObject(AllowedMethodsRequestType.class);
+		allowedMethodsRequestType.setPersonalId(user.getPersonalID());
+
+		ListMethodsRequestType requestType = getInstantiatedObject(ListMethodsRequestType.class);
+		requestType.setRequest(allowedMethodsRequestType);
+
+		ListMethodsE request = getInstantiatedObject(ListMethodsE.class);
+		request.setListMethods(requestType);
+
+		ListMethodsResponseE allowedMethodsResponse = null;
+		try {
+			allowedMethodsResponse = getEhubserviceServiceStub().listMethods(
+					request,
+					getConsumer(), 
+					getProducer(), 
+					getUserId(user), 
+					getServiceID(serviceProviderId), 
+					getService(XRoadClientConstants.SERVICE_LIST_METHODS), 
+					getIssue("Some issue"));
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, 
+					"Failed to get " + AllowedMethodsResponse.class + 
+					" cause of: ", e);
+			return null;
+		}
+		
+		ListMethodsResponseType list = allowedMethodsResponse.getListMethodsResponse();
+		if (list == null) {
+			return null;
+		}
+
+		AllowedMethodsList response = list.getResponse();
+		if (response == null) {
+			return null;
+		}
+
+		return response.getItem();
+	}
 
 	/*
 	 * (non-Javadoc)
