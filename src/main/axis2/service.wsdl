@@ -15,7 +15,7 @@
 			targetNamespace="http://ehubservice.ee.x-rd.net/producer/">
 			<import
 				namespace="http://x-rd.net/xsd/xroad.xsd"
-				schemaLocation="http://x-rd.net/xsd/xroad.xsd" />
+				schemaLocation="../../../resources/xsd/xroad.xsd" />
 			<!-- <import namespace="http://ws-i.org/profiles/basic/1.1/xsd" -->
 			<!-- schemaLocation="http://ws-i.org/profiles/basic/1.1/swaref.xsd" /> -->
 			<!-- Request-response declarations - start -->
